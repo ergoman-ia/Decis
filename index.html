@@ -575,17 +575,18 @@
         import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, arrayUnion, arrayRemove, onSnapshot, collection, getDocs }
             from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-        // 👇 [중요] 진짜 값(하드코딩)을 지우고, 다시 이 표식을 넣어주세요!
-        const firebaseConfig = FIREBASE_CONFIG_PLACEHOLDER;
+        // 👇 [핵심 변경] secrets.js 파일에서 변수를 가져옵니다! (이제 PLACEHOLDER 필요 없음)
+        import { FIREBASE_CONFIG, ADMIN_PASSWORD } from "./secrets.js";
 
         let app, db;
-        try { app = initializeApp(firebaseConfig); db = getFirestore(app); }
+        // 가져온 FIREBASE_CONFIG를 바로 사용
+        try { app = initializeApp(FIREBASE_CONFIG); db = getFirestore(app); }
         catch (e) { console.error(e); alert("Firebase 설정 오류! 코드를 확인하세요."); }
 
         let config = { teamCount: 7, memberCount: 5 };
         
-        // 👇 여기도 원래대로 표식으로 바꿔주세요.
-        const ADMIN_PW = "ADMIN_PW_PLACEHOLDER";
+        // 가져온 ADMIN_PASSWORD를 바로 사용 (이름을 맞추기 위해 변수명 통일)
+        const ADMIN_PW = ADMIN_PASSWORD;
 
         const itemsData = [
             { name: "손전등 (배터리 4개)", expert: 4 }, { name: "잭크 나이프", expert: 6 },
@@ -1189,6 +1190,7 @@
 
 
 </html>
+
 
 
 

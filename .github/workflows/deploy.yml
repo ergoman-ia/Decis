@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 👇 [핵심] secrets.js 파일을 새로 생성하는 단계
+      # 👇 [여기가 핵심] secrets.js 파일을 생성하는 단계가 꼭 있어야 합니다!
       - name: Create secrets.js
         env:
           FIREBASE_CONFIG_JSON: ${{ secrets.FIREBASE_CONFIG }}
@@ -36,22 +36,21 @@ jobs:
           fb_config = os.environ.get('FIREBASE_CONFIG_JSON', '').strip()
           pw_value = os.environ.get('ADMIN_PW_VALUE', '').strip()
 
-          # 2. 안전장치: 사용자가 { }를 빼먹었으면 붙여주기
+          # 2. JSON 중괄호 안전장치
           if fb_config and not fb_config.startswith('{'):
               fb_config = '{' + fb_config + '}'
           
-          # 3. secrets.js 파일 내용 작성 (ES6 모듈 형식)
+          # 3. secrets.js 내용 작성 (export 문법)
           js_content = f'''
           export const FIREBASE_CONFIG = {fb_config};
           export const ADMIN_PASSWORD = \"{pw_value}\";
           '''
 
-          # 4. 파일 생성 (현재 폴더에 secrets.js 로 저장)
+          # 4. 파일 생성
           with open('secrets.js', 'w', encoding='utf-8') as f:
               f.write(js_content)
           
           print('✅ secrets.js created successfully!')
-          print(f'   Config Length: {len(fb_config)}')
           "
 
       - name: Setup Pages

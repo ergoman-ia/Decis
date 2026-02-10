@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 👇 [여기가 핵심] secrets.js 파일을 생성하는 단계가 꼭 있어야 합니다!
+      # 👇 [수정됨] 따옴표가 절대 빠지지 않도록 'json' 모듈을 사용합니다.
       - name: Create secrets.js
         env:
           FIREBASE_CONFIG_JSON: ${{ secrets.FIREBASE_CONFIG }}
@@ -42,7 +42,7 @@ jobs:
               fb_config = '{' + fb_config + '}'
           
           # 3. 비밀번호 안전하게 포장하기 (이게 핵심!)
-          # json.dumps를 쓰면 '1234' -> '\"1234\"'로 자동 변환됩니다.
+          # json.dumps를 쓰면 'admin_0482' -> '"admin_0482"'로 (따옴표 포함해서) 변환됩니다.
           safe_pw = json.dumps(pw_value)
 
           # 4. secrets.js 내용 작성
@@ -70,4 +70,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
 

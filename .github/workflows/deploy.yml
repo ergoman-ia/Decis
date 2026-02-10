@@ -1,14 +1,19 @@
 name: Deploy to GitHub Pages
+
 on:
   push:
     branches: ["main"]
+
+# 1. 권한 설정 (최신 방식: 토큰 없이 OIDC 인증 사용)
 permissions:
   contents: read
   pages: write
   id-token: write
+
 concurrency:
   group: "pages"
   cancel-in-progress: false
+
 jobs:
   deploy:
     environment:
@@ -18,16 +23,55 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Create secrets.js
+
+      # 2. Python으로 HTML 파일 내의 Placeholder를 실제 Secret 값으로 교체
+      - name: Inject Secrets into index.html
+        env:
+          # GitHub Settings > Secrets에 등록한 이름과 같아야 합니다.
+          FIREBASE_CONFIG_JSON: ${{ secrets.FIREBASE_CONFIG }}
+          ADMIN_PW_VALUE: ${{ secrets.ADMIN_PW }}
         run: |
-          echo 'export const FIREBASE_CONFIG = ${{ secrets.FIREBASE_CONFIG }};' >> secrets.js
-          echo 'export const ADMIN_PASSWORD = "${{ secrets.ADMIN_PASSWORD }}";' >> secrets.js 
+          python3 -c "
+          import os
+
+          # HTML 파일 읽기 (파일명이 index.html 인지 꼭 확인하세요!)
+          target_file = 'index.html' 
+          
+          # 파일이 존재하는지 체크 (선택사항이지만 안전을 위해)
+          if not os.path.exists(target_file):
+              # 만약 파일명이 다르다면 여기서 수정해주세요. 예: desert_master_final_fixed.html
+              target_file = 'desert_master_final_fixed.html' 
+
+          with open(target_file, 'r', encoding='utf-8') as f:
+              content = f.read()
+
+          # 환경변수에서 Secret 가져오기
+          fb_config = os.environ['FIREBASE_CONFIG_JSON']
+          pw_value = os.environ['ADMIN_PW_VALUE']
+
+          # 내용 치환 (Placeholder -> 실제값)
+          # Config는 따옴표 없이 객체 그대로, PW는 따옴표 안의 문자열만 교체
+          content = content.replace('FIREBASE_CONFIG_PLACEHOLDER', fb_config)
+          content = content.replace('ADMIN_PW_PLACEHOLDER', pw_value)
+
+          # 덮어쓰기
+          with open(target_file, 'w', encoding='utf-8') as f:
+              f.write(content)
+          
+          print(f'Successfully injected secrets into {target_file}')
+          "
+
+      # 3. GitHub Pages 설정 (공식 액션)
       - name: Setup Pages
         uses: actions/configure-pages@v4
+
+      # 4. 결과물 업로드 (공식 액션)
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '.'
+
+      # 5. 배포 (공식 액션)
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

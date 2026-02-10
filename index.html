@@ -575,21 +575,16 @@
         import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, arrayUnion, arrayRemove, onSnapshot, collection, getDocs }
             from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDZeV4w17EMAw2J0j5F-ggZKDIqyJDMWBs",
-            authDomain: "decis-ac222.firebaseapp.com",
-            projectId: "decis-ac222",
-            storageBucket: "decis-ac222.firebasestorage.app",
-            messagingSenderId: "216679558779",
-            appId: "1:216679558779:web:29d1ef86b251265f94fcde"
-        };
-
+        // 👇 [중요] 진짜 값(하드코딩)을 지우고, 다시 이 표식을 넣어주세요!
+        const firebaseConfig = FIREBASE_CONFIG_PLACEHOLDER;
 
         let app, db;
         try { app = initializeApp(firebaseConfig); db = getFirestore(app); }
         catch (e) { console.error(e); alert("Firebase 설정 오류! 코드를 확인하세요."); }
 
         let config = { teamCount: 7, memberCount: 5 };
+        
+        // 👇 여기도 원래대로 표식으로 바꿔주세요.
         const ADMIN_PW = "ADMIN_PW_PLACEHOLDER";
 
         const itemsData = [
@@ -1194,5 +1189,6 @@
 
 
 </html>
+
 
 

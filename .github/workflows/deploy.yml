@@ -23,69 +23,35 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 👇 [핵심] 파일 이름을 몰라도 찾아서 고치는 강력한 스크립트
-      - name: Inject Secrets Automatically
+      # 👇 [핵심] secrets.js 파일을 새로 생성하는 단계
+      - name: Create secrets.js
         env:
           FIREBASE_CONFIG_JSON: ${{ secrets.FIREBASE_CONFIG }}
           ADMIN_PW_VALUE: ${{ secrets.ADMIN_PW }}
         run: |
           python3 -c "
           import os
-          import sys
 
-          print('🔍 작업 시작: HTML 파일을 스캔합니다...')
-
-          # 1. 환경변수 준비 (JSON 중괄호 안전장치 포함)
+          # 1. 환경변수 가져오기
           fb_config = os.environ.get('FIREBASE_CONFIG_JSON', '').strip()
           pw_value = os.environ.get('ADMIN_PW_VALUE', '').strip()
 
-          if not fb_config:
-              print('❌ Error: GitHub Secret [FIREBASE_CONFIG]가 비어있습니다!')
-              sys.exit(1)
-
-          # 사용자가 { }를 빼먹었을 경우 자동 추가
-          if not fb_config.startswith('{'):
+          # 2. 안전장치: 사용자가 { }를 빼먹었으면 붙여주기
+          if fb_config and not fb_config.startswith('{'):
               fb_config = '{' + fb_config + '}'
-
-          # 2. 현재 폴더의 모든 파일을 검사
-          target_found = False
           
-          # 현재 디렉토리의 파일 목록 출력 (디버깅용)
-          print(f'📂 현재 폴더 파일 목록: {os.listdir(os.getcwd())}')
+          # 3. secrets.js 파일 내용 작성 (ES6 모듈 형식)
+          js_content = f'''
+          export const FIREBASE_CONFIG = {fb_config};
+          export const ADMIN_PASSWORD = \"{pw_value}\";
+          '''
 
-          for filename in os.listdir(os.getcwd()):
-              if filename.endswith('.html'):
-                  try:
-                      with open(filename, 'r', encoding='utf-8') as f:
-                          content = f.read()
-
-                      # 표식(Placeholder)이 있는지 확인
-                      if 'FIREBASE_CONFIG_PLACEHOLDER' in content:
-                          print(f'👉 발견! [{filename}] 파일에서 표식을 찾았습니다.')
-                          
-                          # 교체 작업
-                          new_content = content.replace('FIREBASE_CONFIG_PLACEHOLDER', fb_config)
-                          new_content = new_content.replace('ADMIN_PW_PLACEHOLDER', pw_value)
-
-                          with open(filename, 'w', encoding='utf-8') as f:
-                              f.write(new_content)
-                          
-                          print(f'✅ 수정 완료: [{filename}] 비밀번호 주입 성공!')
-                          target_found = True
-                      else:
-                          print(f'   Skipping [{filename}]: 표식이 없습니다.')
-                          
-                  except Exception as e:
-                      print(f'⚠️ Warning: {filename} 읽기 실패 - {e}')
-
-          # 3. 결과 확인
-          if not target_found:
-              print('\n❌ [치명적 오류] 표식(PLACEHOLDER)이 있는 HTML 파일을 하나도 못 찾았습니다!')
-              print('   - 파일명이나 경로를 확인해주세요.')
-              print('   - 코드 안에 FIREBASE_CONFIG_PLACEHOLDER 철자가 정확한지 확인해주세요.')
-              sys.exit(1) # 배포 중단 (빨간불 뜸)
-          else:
-              print('\n🎉 작업 성공! 배포를 계속합니다.')
+          # 4. 파일 생성 (현재 폴더에 secrets.js 로 저장)
+          with open('secrets.js', 'w', encoding='utf-8') as f:
+              f.write(js_content)
+          
+          print('✅ secrets.js created successfully!')
+          print(f'   Config Length: {len(fb_config)}')
           "
 
       - name: Setup Pages

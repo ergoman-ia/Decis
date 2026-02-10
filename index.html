@@ -575,7 +575,15 @@
         import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, arrayUnion, arrayRemove, onSnapshot, collection, getDocs }
             from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
-        const firebaseConfig = FIREBASE_CONFIG_PLACEHOLDER;
+        const firebaseConfig = {
+            apiKey: "AIzaSyDZeV4w17EMAw2J0j5F-ggZKDIqyJDMWBs",
+            authDomain: "decis-ac222.firebaseapp.com",
+            projectId: "decis-ac222",
+            storageBucket: "decis-ac222.firebasestorage.app",
+            messagingSenderId: "216679558779",
+            appId: "1:216679558779:web:29d1ef86b251265f94fcde"
+        };
+
 
         let app, db;
         try { app = initializeApp(firebaseConfig); db = getFirestore(app); }
@@ -1186,4 +1194,5 @@
 
 
 </html>
+
 

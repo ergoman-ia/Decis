@@ -897,18 +897,19 @@
 
         window.exportAllDataToCSV = async () => {
             const btn = document.querySelector('.danger-zone .btn');
-            const originalText = btn.innerText;
-            btn.innerText = "⏳ 데이터 백업 생성 중...";
+            // 버튼이 없을 경우를 대비해 예외 처리
+            const originalText = btn ? btn.innerText : "삭제";
+            if (btn) btn.innerText = "⏳ 데이터 백업 생성 중...";
 
             try {
                 let csvContent = "\uFEFF"; // 한글 깨짐 방지 (BOM)
-                // 헤더 작성
+                // 1. 헤더 작성
                 csvContent += "과정명,팀명,구분(ID),입력시간,";
                 // 품목 1~15 헤더
                 itemsData.forEach((item, idx) => csvContent += `${item.name}(${idx + 1}),`);
                 csvContent += "\n";
 
-                // 모든 세션 및 팀 데이터 수집
+                // 2. 모든 세션 및 팀 데이터 수집
                 for (const sess of sessionList) {
                     let tCount = 7;
                     // 팀 개수 확인
@@ -951,29 +952,37 @@
                     }
                 }
 
-                // 다운로드 트리거
+                // 3. 파일명 생성 (년-월-일_시분초)
                 const now = new Date();
-const dateStr = now.getFullYear() + "-" +
-                String(now.getMonth() + 1).padStart(2, '0') + "-" +
-                String(now.getDate()).padStart(2, '0');
-const timeStr = String(now.getHours()).padStart(2, '0') + "시" +
-                String(now.getMinutes()).padStart(2, '0') + "분";
+                const datePart = now.getFullYear() + "-" +
+                                String(now.getMonth() + 1).padStart(2, '0') + "-" +
+                                String(now.getDate()).padStart(2, '0');
+                const timePart = String(now.getHours()).padStart(2, '0') + "시" +
+                                String(now.getMinutes()).padStart(2, '0') + "분" +
+                                String(now.getSeconds()).padStart(2, '0') + "초";
+                
+                const fileName = `사막조난_백업_${datePart}_${timePart}.csv`;
 
-// 파일명 예시: 사막조난_백업_2023-10-27_15시30분.csv
-link.setAttribute("download", `사막조난_백업_${dateStr}_${timeStr}.csv`);
+                // 4. 다운로드 실행 (Link 에러 해결됨)
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                
+                // a 태그를 만들고 클릭하는 방식
+                const link = document.createElement("a");
+                link.setAttribute("href", url);
+                link.setAttribute("download", fileName);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
 
-link.style.visibility = 'hidden';
-document.body.appendChild(link);
-link.click();
-document.body.removeChild(link);
-
-                alert("CSV 파일이 다운로드되었습니다. 파일을 확인 후 삭제를 계속 진행하세요.");
+                alert(`파일이 다운로드되었습니다: ${fileName}\n확인 후 삭제를 계속 진행하세요.`);
 
             } catch (e) {
                 console.error(e);
                 alert("백업 중 오류 발생: " + e.message);
             } finally {
-                btn.innerText = originalText;
+                if (btn) btn.innerText = originalText;
             }
         }
 
@@ -1273,5 +1282,6 @@ document.body.removeChild(link);
 </body>
 
 </html>
+
 
 

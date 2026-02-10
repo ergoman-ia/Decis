@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>사막 조난 시뮬레이션 Master Final</title>
+    <title>의사결정 시뮬레이션_사막 조난</title>
     <style>
         :root {
             --primary: #2c3e50;
@@ -47,6 +47,10 @@
             border-bottom: 2px solid var(--primary);
             padding-bottom: 20px;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            /* 👈 화면이 좁으면 줄바꿈 허용 */
+            gap: 10px;
+            /* 👈 줄바꿈 시 간격 */
         }
 
         h1 {
@@ -206,6 +210,7 @@
             width: 100%;
             border-collapse: collapse;
             min-width: 700px;
+            /* PC에서는 유지 */
             font-size: 0.95rem;
         }
 
@@ -370,6 +375,75 @@
             background-color: #fff5f5;
             text-align: center;
         }
+
+        /* 📱 모바일 전용 스타일 추가 */
+        @media (max-width: 600px) {
+            .header-top {
+                flex-direction: column;
+                /* 위아래로 배치 */
+                align-items: flex-start;
+                /* 왼쪽 정렬 */
+            }
+
+            .admin-link {
+                font-size: 0.85rem;
+                /* 버튼 글씨 살짝 작게 */
+                align-self: flex-end;
+                /* 버튼만 오른쪽 끝으로 */
+            }
+
+            h1 {
+                font-size: 1.5rem;
+                /* 모바일에서 제목 크기 조정 */
+            }
+        }
+
+        table {
+            min-width: 100% !important;
+            table-layout: fixed;
+            /* 셀 너비를 고정하여 스크롤 방지 */
+        }
+
+        /* 2. 일반 텍스트가 줄바꿈되도록 허용 */
+        th,
+        td {
+            white-space: normal;
+            padding: 8px 4px;
+            /* 패딩을 줄여 공간 확보 */
+            word-break: keep-all;
+            /* 단어 단위 줄바꿈 */
+        }
+
+        /* 3. 입력 테이블(inputTable)의 컬럼 비율 조정 */
+        /* 첫 번째 열(품목명)을 넓게, 두 번째 열(입력칸)을 좁게 */
+        #inputTable colgroup {
+            display: none;
+        }
+
+        /* 혹시 모를 충돌 방지 */
+
+        #inputTable th:first-child,
+        #inputTable td:first-child {
+            width: 70%;
+            /* 품목명 공간 */
+            text-align: left;
+        }
+
+        #inputTable th:last-child,
+        #inputTable td:last-child {
+            width: 30%;
+            /* 입력칸 공간 */
+        }
+
+        /* 4. 입력칸 디자인 최적화 */
+        .rank-input {
+            width: 100% !important;
+            margin: 0 !important;
+            text-align: center;
+            padding: 8px 0 !important;
+            /* 위아래 여백 확보 */
+        }
+        }
     </style>
 </head>
 
@@ -377,8 +451,7 @@
 
     <div class="container">
         <div class="header-top">
-            <h1>🌵 사막 조난 시뮬레이션 <span style="font-size:0.5em; color:#999; vertical-align:middle;">Master Final</span>
-            </h1>
+            <h1>🌵 사막 조난 시뮬레이션</h1>
             <span class="admin-link" onclick="toggleAdmin()">⚙️ 관리자 모드</span>
         </div>
 
@@ -584,7 +657,7 @@
         catch (e) { console.error(e); alert("Firebase 설정 오류! 코드를 확인하세요."); }
 
         let config = { teamCount: 7, memberCount: 5 };
-        
+
         // 가져온 ADMIN_PASSWORD를 바로 사용 (이름을 맞추기 위해 변수명 통일)
         const ADMIN_PW = ADMIN_PASSWORD;
 
@@ -1188,10 +1261,4 @@
     </script>
 </body>
 
-
 </html>
-
-
-
-
-

@@ -23,7 +23,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # 👇 [수정됨] 따옴표가 절대 빠지지 않도록 'json' 모듈을 사용합니다.
+      # 👇 [업그레이드] 비밀번호 "세척 및 재포장" 단계
       - name: Create secrets.js
         env:
           FIREBASE_CONFIG_JSON: ${{ secrets.FIREBASE_CONFIG }}
@@ -31,34 +31,37 @@ jobs:
         run: |
           python3 -c "
           import os
-          import json  # 👈 json 모듈 추가 (따옴표 해결사)
+          import json
 
           # 1. 환경변수 가져오기
           fb_config = os.environ.get('FIREBASE_CONFIG_JSON', '').strip()
-          pw_value = os.environ.get('ADMIN_PW_VALUE', '').strip()
+          raw_pw = os.environ.get('ADMIN_PW_VALUE', '').strip()
 
-          # 2. 안전장치: JSON 중괄호 체크
+          # 2. [강력 세척] 혹시 모를 따옴표(", ')를 강제로 제거합니다.
+          # (GitHub Secret에 \"admin_0482\"로 저장되어 있어도 admin_0482로 만듭니다)
+          clean_pw = raw_pw.replace('\"', '').replace('\'', '')
+
+          # 3. JSON 중괄호 안전장치
           if fb_config and not fb_config.startswith('{'):
               fb_config = '{' + fb_config + '}'
           
-          # 3. 비밀번호 안전하게 포장하기 (이게 핵심!)
-          # json.dumps를 쓰면 'admin_0482' -> '"admin_0482"'로 (따옴표 포함해서) 변환됩니다.
-          safe_pw = json.dumps(pw_value)
+          # 4. [재포장] 깨끗해진 비밀번호를 안전한 문자열로 변환
+          # 결과: admin_0482 -> \"admin_0482\" (따옴표 딱 1겹)
+          final_pw_json = json.dumps(clean_pw)
 
-          # 4. secrets.js 내용 작성
-          # fb_config는 객체 그대로 넣고, pw_value는 포장된 safe_pw를 넣습니다.
+          # 5. secrets.js 내용 작성
           js_content = f'''
           export const FIREBASE_CONFIG = {fb_config};
-          export const ADMIN_PASSWORD = {safe_pw};
+          export const ADMIN_PASSWORD = {final_pw_json};
           '''
 
-          # 5. 파일 생성
+          # 6. 파일 생성
           with open('secrets.js', 'w', encoding='utf-8') as f:
               f.write(js_content)
           
-          print('✅ secrets.js created successfully with safe quotes!')
+          print(f'✅ secrets.js created! Password length: {len(clean_pw)}')
           "
-          
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
@@ -70,5 +73,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
-

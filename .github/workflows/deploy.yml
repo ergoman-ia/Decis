@@ -31,28 +31,34 @@ jobs:
         run: |
           python3 -c "
           import os
+          import json  # 👈 json 모듈 추가 (따옴표 해결사)
 
           # 1. 환경변수 가져오기
           fb_config = os.environ.get('FIREBASE_CONFIG_JSON', '').strip()
           pw_value = os.environ.get('ADMIN_PW_VALUE', '').strip()
 
-          # 2. JSON 중괄호 안전장치
+          # 2. 안전장치: JSON 중괄호 체크
           if fb_config and not fb_config.startswith('{'):
               fb_config = '{' + fb_config + '}'
           
-          # 3. secrets.js 내용 작성 (export 문법)
+          # 3. 비밀번호 안전하게 포장하기 (이게 핵심!)
+          # json.dumps를 쓰면 '1234' -> '\"1234\"'로 자동 변환됩니다.
+          safe_pw = json.dumps(pw_value)
+
+          # 4. secrets.js 내용 작성
+          # fb_config는 객체 그대로 넣고, pw_value는 포장된 safe_pw를 넣습니다.
           js_content = f'''
           export const FIREBASE_CONFIG = {fb_config};
-          export const ADMIN_PASSWORD = \"{pw_value}\";
+          export const ADMIN_PASSWORD = {safe_pw};
           '''
 
-          # 4. 파일 생성
+          # 5. 파일 생성
           with open('secrets.js', 'w', encoding='utf-8') as f:
               f.write(js_content)
           
-          print('✅ secrets.js created successfully!')
+          print('✅ secrets.js created successfully with safe quotes!')
           "
-
+          
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
@@ -64,3 +70,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+

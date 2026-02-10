@@ -756,6 +756,12 @@
             });
         }
 
+        window.deleteDataGlobal = async (sessId, teamId, docId) => {
+        if(!confirm("정말 삭제하시겠습니까?")) return;
+        try { await deleteDoc(doc(db, "sessions", sessId, "teams", teamId, "submissions", docId)); alert("삭제되었습니다."); loadAllDataForAdmin(); } 
+        catch(e) { alert("삭제 실패: " + e.message); }
+    }
+        
         // [전체 삭제]
         window.deleteAllDatabase = async () => {
             if (!confirm("⚠️ 경고: 모든 과정과 점수 데이터가 삭제됩니다!\n정말 진행하시겠습니까?")) return;
@@ -1262,3 +1268,4 @@
 </body>
 
 </html>
+

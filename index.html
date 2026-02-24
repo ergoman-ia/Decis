@@ -1271,7 +1271,7 @@ window.deleteDataGlobal = async (sessId, teamId, docId) => {
                         if (stat.best < stat.group) {
                             if (stat.gain > 0) {
                                 // 시너지가 났으나 최고점자의 의견이 다 반영되지 않은 경우
-                                stat.msg += `<span class="warning-text">※ 개인 최우수자(${stat.best}점)의 일부 의견만 수용됨</span>`;
+                                stat.msg += `<span class="warning-text">※ 개인 최우수자의 일부 의견만 수용됨</span>`;
                             } else {
                                 // 역효과나 변화가 없는 경우
                                 stat.msg += `<span class="warning-text">※ 개인 최우수자(${stat.best}점) 의견 묵살됨</span>`;
@@ -1321,3 +1321,4 @@ window.deleteDataGlobal = async (sessId, teamId, docId) => {
 </body>
 
 </html>
+

@@ -239,7 +239,6 @@
 
         .col-wide {
             width: auto;
-            text-align: left;
         }
 
         .bg-group {
@@ -544,8 +543,7 @@
                         <input type="checkbox" id="isLeaderCheck">
                         <label for="isLeaderCheck">
                             서기 (팀 점수 입력 담당자)
-                            <br><span style="font-size:0.8rem; color:#888; font-weight:normal;">* 팀 토론 결과를 추가로
-                                입력합니다.</span>
+                            <br><span style="font-size:0.8rem; color:#888; font-weight:normal;">* 팀 토론 결과를 한 분만 추가로 입력합니다.</span>
                         </label>
                     </div>
                 </div>
@@ -677,30 +675,39 @@
         };
 
         let sessionList = [];
+        let activeSessionList = [];
 
         async function loadSessionList() {
             onSnapshot(doc(db, "settings", "courses"), (docSnap) => {
                 sessionList = [];
-                if (docSnap.exists() && docSnap.data().list) sessionList = docSnap.data().list;
-                updateSelectOptions(sessionList);
-                renderAdminSessionList(sessionList);
+                activeSessionList = [];
+                if (docSnap.exists()) {
+                    if (docSnap.data().list) sessionList = docSnap.data().list;
+                    if (docSnap.data().activeList) activeSessionList = docSnap.data().activeList;
+                }
+                updateSelectOptions(sessionList, activeSessionList);
+                renderAdminSessionList(sessionList, activeSessionList);
             });
         }
 
-        function updateSelectOptions(courses) {
+        function updateSelectOptions(courses, activeCourses) {
             const selects = ['userSessionSelect', 'dashSessionSelect', 'adminSessionSelect', 'resultViewSelect', 'manageSessionSelect'];
             selects.forEach(id => {
                 const el = document.getElementById(id);
                 if (!el) return;
                 const current = el.value;
                 el.innerHTML = "";
-                courses.forEach(c => el.innerHTML += `<option value="${c}">${c}</option>`);
+                
+                // 사용자 모드 셀렉트박스는 체크된(active) 과정만 보여줌
+                const targetCourses = (id === 'userSessionSelect') ? activeCourses : courses;
+                
+                targetCourses.forEach(c => el.innerHTML += `<option value="${c}">${c}</option>`);
 
                 if (['dashSessionSelect', 'resultViewSelect', 'userSessionSelect', 'manageSessionSelect'].includes(id)) {
                     el.innerHTML = "<option value=''>과정을 선택하세요</option>" + el.innerHTML;
                     el.value = "";
                 } else {
-                    if (courses.includes(current)) el.value = current;
+                    if (targetCourses.includes(current)) el.value = current;
                 }
             });
         }
@@ -736,7 +743,10 @@
             const cnt = parseInt(document.getElementById('newSessionTeamCnt').value) || 7;
             if (!name) return alert("과정명을 입력하세요.");
 
-            await updateDoc(doc(db, "settings", "courses"), { list: arrayUnion(name) });
+            await updateDoc(doc(db, "settings", "courses"), { 
+                list: arrayUnion(name),
+                activeList: arrayUnion(name) // 새로 추가한 과정은 기본으로 체크되도록 설정
+            });
             await setDoc(doc(db, "course_configs", name), { teamCount: cnt });
 
             document.getElementById('newSessionName').value = "";
@@ -745,23 +755,40 @@
 
         window.deleteSession = async (name) => {
             if (confirm(`'${name}' 과정을 목록에서 삭제하시겠습니까?`)) {
-                await updateDoc(doc(db, "settings", "courses"), { list: arrayRemove(name) });
+                await updateDoc(doc(db, "settings", "courses"), { 
+                    list: arrayRemove(name),
+                    activeList: arrayRemove(name) // 활성화 목록에서도 함께 제거
+                });
                 await deleteDoc(doc(db, "course_configs", name));
             }
         }
-        function renderAdminSessionList(courses) {
+
+        function renderAdminSessionList(courses, activeCourses) {
             const div = document.getElementById('sessionListAdmin'); div.innerHTML = "";
             courses.forEach(c => {
-                div.innerHTML += `<div class="session-item"><span class="session-name">📂 ${c}</span><button class="btn btn-red btn-sm" onclick="deleteSession('${c}')">삭제</button></div>`;
+                const isChecked = activeCourses.includes(c) ? 'checked' : '';
+                div.innerHTML += `
+                <div class="session-item">
+                    <label style="margin:0; display:flex; align-items:center; cursor:pointer; font-weight:normal; color:#333;">
+                        <input type="checkbox" ${isChecked} onchange="toggleCourseActive('${c}', this.checked)" style="width:16px; height:16px; margin:0 8px 0 0;">
+                        <span class="session-name">📂 ${c}</span>
+                    </label>
+                    <button class="btn btn-red btn-sm" onclick="deleteSession('${c}')">삭제</button>
+                </div>`;
             });
         }
 
-        window.deleteDataGlobal = async (sessId, teamId, docId) => {
-        if(!confirm("정말 삭제하시겠습니까?")) return;
-        try { await deleteDoc(doc(db, "sessions", sessId, "teams", teamId, "submissions", docId)); alert("삭제되었습니다."); loadAllDataForAdmin(); } 
-        catch(e) { alert("삭제 실패: " + e.message); }
-    }
-        
+        // [추가] 관리자가 체크박스를 클릭할 때 상태를 업데이트하는 함수
+        window.toggleCourseActive = async (name, isChecked) => {
+            try {
+                if (isChecked) {
+                    await updateDoc(doc(db, "settings", "courses"), { activeList: arrayUnion(name) });
+                } else {
+                    await updateDoc(doc(db, "settings", "courses"), { activeList: arrayRemove(name) });
+                }
+            } catch (e) { console.error("상태 변경 오류:", e); }
+        }
+
         // [전체 삭제]
         window.deleteAllDatabase = async () => {
             if (!confirm("⚠️ 경고: 모든 과정과 점수 데이터가 삭제됩니다!\n정말 진행하시겠습니까?")) return;
@@ -848,6 +875,12 @@
                 listDiv.innerHTML = html;
             } catch (e) { console.error(e); listDiv.innerHTML = "오류 발생: " + e.message; }
         }
+
+window.deleteDataGlobal = async (sessId, teamId, docId) => {
+        if(!confirm("정말 삭제하시겠습니까?")) return;
+        try { await deleteDoc(doc(db, "sessions", sessId, "teams", teamId, "submissions", docId)); alert("삭제되었습니다."); loadAllDataForAdmin(); } 
+        catch(e) { alert("삭제 실패: " + e.message); }
+    }
 
         window.deleteAllDatabase = async () => {
             if (!confirm("⚠️ 경고: 모든 과정과 점수 데이터가 삭제됩니다!")) return;
@@ -1236,7 +1269,13 @@
                         else stat.msg += `<div class="tag tag-neutral">변화 없음</div>`;
 
                         if (stat.best < stat.group) {
-                            stat.msg += `<span class="warning-text">※ 전문가(${stat.best}점) 의견 묵살됨</span>`;
+                            if (stat.gain > 0) {
+                                // 시너지가 났으나 최고점자의 의견이 다 반영되지 않은 경우
+                                stat.msg += `<span class="warning-text">※ 개인 최우수자(${stat.best}점)의 일부 의견만 수용됨</span>`;
+                            } else {
+                                // 역효과나 변화가 없는 경우
+                                stat.msg += `<span class="warning-text">※ 개인 최우수자(${stat.best}점) 의견 묵살됨</span>`;
+                            }
                         }
                     }
                     all.push(stat);
@@ -1282,7 +1321,3 @@
 </body>
 
 </html>
-
-
-
-

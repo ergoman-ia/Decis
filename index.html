@@ -831,7 +831,7 @@
                 const current = el.value;
                 const targetCourses = (id === 'userSessionSelect') ? activeCourses : courses;
                 const needsEmpty = SELECTS_WITH_EMPTY.includes(id);
-                const options = targetCourses.map(c => `<option value="${c}">${c}</option>`).join('');
+                const options = targetCourses.slice().reverse().map(c => `<option value="${c}">${c}</option>`).join('');
                 el.innerHTML = needsEmpty
                     ? `<option value="">과정을 선택하세요</option>${options}`
                     : options;

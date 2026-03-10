@@ -869,7 +869,7 @@
 
         function renderAdminSessionList(courses, activeCourses) {
             const div = document.getElementById('sessionListAdmin');
-            div.innerHTML = courses.map(c => {
+            div.innerHTML = courses.slice().reverse().map(c => {
                 const chk = activeCourses.includes(c) ? 'checked' : '';
                 return `
                 <div class="session-item">

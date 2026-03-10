@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>의사결정 시뮬레이션_사막 조난</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #c0392b;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --border: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin: 0;
+            color: var(--primary);
+            letter-spacing: -1px;
+        }
+
+        .admin-link {
+            color: #aaa;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .admin-link:hover { color: var(--accent); }
+
+        .screen {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: #fff;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover { transform: translateY(-2px); }
+
+        .btn-blue   { background-color: var(--accent); }
+        .btn-green  { background-color: var(--success); }
+        .btn-gray   { background-color: #95a5a6; }
+        .btn-red    { background-color: var(--danger); }
+        .btn-purple { background-color: #8e44ad; }
+        .btn-orange { background-color: var(--warning); color: #fff; }
+
+        .btn-sm {
+            width: auto;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #ccc;
+            color: #666;
+        }
+
+        .checkbox-wrapper {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-wrapper input {
+            width: 20px;
+            height: 20px;
+            margin-right: 12px;
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper label {
+            margin: 0;
+            cursor: pointer;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            margin-top: 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 100%;
+            table-layout: fixed;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 8px 4px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+            white-space: normal;
+            word-break: keep-all;
+        }
+
+        th {
+            background-color: #f1f3f5;
+            font-weight: 700;
+            color: var(--primary);
+            border-bottom: 2px solid #ddd;
+        }
+
+        .col-narrow { width: 60px; }
+        .col-med    { width: 100px; }
+        .col-wide   { width: auto; }
+
+        .bg-group {
+            background-color: #e3f2fd;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .bg-expert {
+            background-color: #fff9c4;
+            font-weight: 700;
+            color: #d4ac0d;
+        }
+
+        .interpret-box {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .tag-good    { background: #d4edda; color: #155724; }
+        .tag-bad     { background: #f8d7da; color: #721c24; }
+        .tag-neutral { background: #e2e3e5; color: #383d41; }
+
+        .warning-text {
+            color: #c0392b;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .error-input {
+            border: 2px solid var(--danger) !important;
+            background-color: #fff5f5 !important;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: white;
+            display: inline-block;
+            min-width: 30px;
+        }
+
+        .bg-good    { background-color: var(--success); }
+        .bg-bad     { background-color: var(--danger); }
+        .bg-neutral { background-color: #95a5a6; }
+
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .manage-table th { background-color: #34495e; color: white; }
+        .manage-table td { font-size: 0.9rem; vertical-align: middle; }
+        .manage-table tr:hover { background-color: #f1f1f1; }
+
+        .role-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .role-group { background: #e3f2fd; color: #3498db; }
+        .role-indiv { background: #f5f5f5; color: #666; }
+
+        .data-preview {
+            font-family: monospace;
+            color: #555;
+            font-size: 0.85rem;
+            letter-spacing: -0.5px;
+        }
+
+        .danger-zone {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed var(--danger);
+            border-radius: 12px;
+            background-color: #fff5f5;
+            text-align: center;
+        }
+
+        /* 입력 테이블 컬럼 비율 */
+        #inputTable colgroup { display: none; }
+        #inputTable th:first-child,
+        #inputTable td:first-child { width: 70%; text-align: left; }
+        #inputTable th:last-child,
+        #inputTable td:last-child  { width: 30%; }
+
+        .rank-input {
+            width: 100% !important;
+            margin: 0 !important;
+            text-align: center;
+            padding: 8px 0 !important;
+        }
+
+        /* ── [신규] Firebase 오류 배너 ──────────────────────────── */
+        .error-banner {
+            background: #fff5f5;
+            border: 1px solid #f5c6cb;
+            border-radius: 8px;
+            padding: 16px 20px;
+            color: #721c24;
+            font-size: 0.95rem;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* ── [신규] 현황판 팀 카드 ──────────────────────────────── */
+        .team-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .team-card {
+            border-radius: 10px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .team-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+        .team-card.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(52,152,219,0.25); }
+
+        /* 완료: 집단 입력까지 완료 */
+        .team-card.status-done     { background: #f0faf3; border-color: #a8d8b5; }
+        /* 진행 중: 개인 제출은 있으나 집단 미입력 */
+        .team-card.status-progress { background: #fffbf0; border-color: #f5d98a; }
+        /* 미입력: 아무것도 없음 */
+        .team-card.status-empty    { background: #f8f9fa; border-color: #ddd; }
+
+        .team-card .card-icon  { font-size: 1.6rem; margin-bottom: 6px; }
+        .team-card .card-name  { font-weight: 700; font-size: 1rem; color: var(--primary); margin-bottom: 6px; }
+        .team-card .card-info  { font-size: 0.8rem; color: #666; line-height: 1.7; }
+
+        .card-group-badge {
+            display: inline-block;
+            margin-top: 7px;
+            padding: 2px 9px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .gbadge-done    { background: #d4edda; color: #155724; }
+        .gbadge-waiting { background: #fff3cd; color: #856404; }
+        .gbadge-none    { background: #e2e3e5; color: #495057; }
+
+        /* 팀 상세 영역 */
+        .dash-detail {
+            border-top: 2px solid var(--border);
+            padding-top: 18px;
+            margin-top: 8px;
+        }
+
+        .dash-detail-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* 모바일 */
+        @media (max-width: 600px) {
+            .header-top { flex-direction: column; align-items: flex-start; }
+            .admin-link  { font-size: 0.85rem; align-self: flex-end; }
+            h1           { font-size: 1.5rem; }
+            .team-card-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="header-top">
+            <h1>🌵 사막 조난 시뮬레이션</h1>
+            <span class="admin-link" onclick="toggleAdmin()">⚙️ 관리자 모드</span>
+        </div>
+
+        <!-- [신규] Firebase 연결 오류 배너 -->
+        <div id="errorBanner" class="error-banner" style="display:none;">
+            ⚠️ 서버 연결에 실패했습니다. 네트워크 상태를 확인하거나 관리자에게 문의하세요.
+        </div>
+
+        <!-- 관리자 화면 -->
+        <div id="adminScreen" class="screen">
+            <div class="card" id="adminLogin" style="max-width:400px; margin:20px auto;">
+                <h3 style="text-align:center; margin-top:0;">🔒 관리자 로그인</h3>
+                <input type="password" id="adminPw" placeholder="비밀번호">
+                <button class="btn btn-blue" onclick="checkAdmin()">로그인</button>
+                <button class="btn btn-outline" onclick="location.reload()" style="margin-top:10px;">돌아가기</button>
+            </div>
+
+            <div id="adminPanel" style="display:none;">
+                <div style="text-align:right; margin-bottom:20px;">
+                    <button class="btn btn-outline btn-sm" onclick="location.reload()">관리자 종료</button>
+                </div>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;">
+                    <div class="card" style="margin:0; border-left:5px solid var(--accent); display:flex; flex-direction:column;">
+                        <h4 style="margin:0 0 15px 0; color:var(--accent);">📚 교과과정 및 팀 설정</h4>
+                        <label style="font-size:0.85rem;">새 과정 추가 (팀 개수 지정)</label>
+                        <div style="display:flex; gap:10px; margin-bottom:15px;">
+                            <input type="text"   id="newSessionName"    placeholder="예: 1차_신입교육" style="margin:0; flex:2;">
+                            <input type="number" id="newSessionTeamCnt" placeholder="팀 수" value="7"  style="margin:0; width:80px; flex:1;">
+                            <button class="btn btn-blue btn-sm" onclick="addSession()">추가</button>
+                        </div>
+                        <div style="flex-grow:1; max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px;">
+                            <div id="sessionListAdmin"></div>
+                        </div>
+                    </div>
+
+                    <div class="card" style="margin:0; border-left:5px solid var(--warning); display:flex; flex-direction:column; justify-content:center; text-align:center;">
+                        <h4 style="margin:0 0 20px 0; color:var(--warning);">📊 결과 분석 센터</h4>
+                        <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
+                            입력된 데이터를 바탕으로<br>팀별 시너지와 개인 역량을 분석합니다.
+                        </p>
+                        <div style="display:flex; flex-direction:column; gap:15px; align-items:center;">
+                            <button class="btn btn-purple" onclick="goToAllResultScreen()" style="width:80%;">🏆 전체 종합 결과 (해석 포함)</button>
+                            <button class="btn btn-gray"   onclick="viewDashboard()"       style="width:80%;">👀 팀별 입력 현황판</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="border-left:5px solid #2980b9;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h4 style="margin:0; color:#2980b9;">🗂️ 실시간 입력 데이터 관리 (개별 삭제)</h4>
+                        <button class="btn btn-gray btn-sm" onclick="loadAllDataForAdmin()">🔄 전체 데이터 조회</button>
+                    </div>
+                    <div id="manageDataList" class="table-wrap" style="max-height:300px; overflow-y:auto;">
+                        <p style="text-align:center; padding:20px; color:#aaa;">조회 버튼을 누르면 입력된 모든 데이터를 확인하고 삭제할 수 있습니다.</p>
+                    </div>
+                </div>
+
+                <div class="danger-zone">
+                    <h4 style="margin:0 0 10px 0; color:var(--danger);">⛔ 시스템 초기화 (년말 정산용)</h4>
+                    <p style="font-size:0.9rem; color:#c0392b; margin-bottom:15px;">
+                        모든 교과과정 목록과 입력된 점수 데이터를 영구적으로 삭제합니다.<br>
+                        <strong>이 작업은 절대 되돌릴 수 없습니다.</strong>
+                    </p>
+                    <button class="btn btn-red" onclick="deleteAllDatabase()">⚠️ 모든 DB 데이터 및 과정 삭제</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 참가자 입장 화면 -->
+        <div id="joinScreen" class="screen active">
+            <div class="card" style="max-width:500px; margin:40px auto; text-align:center;">
+                <h3 style="margin-top:0;">👋 참가자 입장</h3>
+                <p style="color:#666; font-size:0.95rem;">관리자가 개설한 과정을 선택하세요.</p>
+
+                <div style="text-align:left; margin-top:30px;">
+                    <label>📌 교과과정</label>
+                    <select id="userSessionSelect" onchange="onUserSessionChange()">
+                        <option value="">목록 로딩 중...</option>
+                    </select>
+
+                    <label>👥 소속 팀</label>
+                    <select id="teamSelect">
+                        <option value="">과정을 먼저 선택하세요</option>
+                    </select>
+
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="isLeaderCheck">
+                        <label for="isLeaderCheck">
+                            서기 (팀 점수 입력 담당자)
+                            <br><span style="font-size:0.8rem; color:#888; font-weight:normal;">* 팀 토론 결과를 한 분만 추가로 입력합니다.</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="btn btn-blue" onclick="enterSim()" style="margin-top:20px;">시뮬레이션 시작</button>
+            </div>
+        </div>
+
+        <!-- 순위 입력 화면 -->
+        <div id="inputScreen" class="screen">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <div>
+                        <h3 id="inputTitle" style="margin:0;"></h3>
+                        <span id="roleBadge" class="badge bg-neutral" style="margin-top:5px;">개인 참가자</span>
+                    </div>
+                </div>
+
+                <div style="background:#eef2f5; padding:15px; border-radius:8px; margin-bottom:20px; font-size:0.9rem; border-left:4px solid var(--primary); line-height:1.6;">
+                    <strong>[입력 가이드]</strong><br>
+                    사막 조난 상황에서 살기 위해 가장 중요한 품목부터 번호를 입력해 주세요.<br>
+                    1위(가장 중요) ~ 15위(가장 덜 중요)를 중복 없이 입력하세요.<br>
+                    <span style="color:red;">수정이 불가하오니, 꼼꼼히 확인 후 제출 바랍니다.</span>
+                </div>
+
+                <div class="table-wrap">
+                    <table id="inputTable">
+                        <thead id="inputThead"></thead>
+                        <tbody id="inputBody"></tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top:20px; display:flex; gap:10px;">
+                    <button class="btn btn-green" onclick="submitData()">💾 제출 및 저장</button>
+                    <button class="btn btn-gray"  onclick="location.reload()">취소</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 제출 완료 화면 -->
+        <div id="waitScreen" class="screen">
+            <div class="card" style="text-align:center; padding:50px 20px;">
+                <div style="font-size:3rem; margin-bottom:20px;">✅</div>
+                <h2 style="color:var(--success); margin:0;">제출 완료</h2>
+                <p style="font-size:1.1rem; color:#555;">점수가 안전하게 시스템에 저장되었습니다.</p>
+                <hr style="width:50px; margin:20px auto; border-top:2px solid #eee;">
+                <button class="btn btn-outline btn-sm" onclick="location.reload()" style="margin-top:30px;">처음 화면으로</button>
+            </div>
+        </div>
+
+        <!-- [개편] 현황판 화면 -->
+        <div id="dashScreen" class="screen">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3 style="margin:0;">📋 팀별 입력 현황판</h3>
+                    <button class="btn btn-outline btn-sm" onclick="toggleAdmin()">돌아가기</button>
+                </div>
+
+                <!-- 과정 선택 -->
+                <div style="background:#f8f9fa; padding:15px; border-radius:8px; margin-bottom:20px;">
+                    <label style="margin-bottom:5px; font-size:0.85rem;">📌 교과과정 선택</label>
+                    <select id="dashSessionSelect" onchange="onDashSessionChange()" style="margin:0;"></select>
+                </div>
+
+                <!-- 전체 팀 요약 카드 그리드 -->
+                <div id="dashTeamCards">
+                    <p style="text-align:center; padding:30px; color:#999;">과정을 선택하면 팀별 현황이 표시됩니다.</p>
+                </div>
+
+                <!-- 팀 카드 클릭 시 상세 순위표 (기본 숨김) -->
+                <div id="dashDetail" class="dash-detail" style="display:none;">
+                    <div class="dash-detail-title" id="dashDetailTitle"></div>
+                    <div id="dashContent" class="table-wrap"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 전체 결과 화면 -->
+        <div id="allResultScreen" class="screen">
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                    <h3>🏆 전체 종합 분석 결과</h3>
+                    <button class="btn btn-outline btn-sm" onclick="toggleAdmin()">돌아가기</button>
+                </div>
+
+                <div style="background:#f0f8ff; padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid #b6e0fe;">
+                    <label style="margin-bottom:5px; font-size:0.9rem;">📂 분석할 교과과정을 선택하세요</label>
+                    <select id="resultViewSelect" onchange="loadResultTable()" style="margin:0; font-weight:bold; color:var(--accent);">
+                        <option value="">선택...</option>
+                    </select>
+                </div>
+
+                <div id="allResultContent" class="table-wrap">
+                    <p style="text-align:center; padding:30px; color:#aaa;">과정을 선택하면 결과가 표시됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getFirestore, doc, getDoc, setDoc, updateDoc, addDoc, deleteDoc, arrayUnion, arrayRemove, onSnapshot, collection, getDocs }
+            from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+        import { FIREBASE_CONFIG, ADMIN_PASSWORD } from "./secrets.js";
+
+        // ── [개선] Firebase 초기화 + 오류 시 배너 표시 ──────────────
+        let app, db;
+        try {
+            app = initializeApp(FIREBASE_CONFIG);
+            db  = getFirestore(app);
+        } catch (e) {
+            console.error("Firebase 초기화 실패:", e);
+            showErrorBanner();
+        }
+
+        function showErrorBanner() {
+            document.getElementById('errorBanner').style.display = 'block';
+            document.getElementById('userSessionSelect').innerHTML =
+                "<option value=''>⚠️ 서버 연결 실패 — 관리자에게 문의하세요</option>";
+        }
+
+        const ADMIN_PW = ADMIN_PASSWORD;
+
+        // ── 품목 데이터 ──────────────────────────────────────────────
+        const itemsData = [
+            { name: "손전등 (배터리 4개)", expert: 4  },
+            { name: "휴대용 나이프",          expert: 6  },
+            { name: "그 부근의 지도",            expert: 12 },
+            { name: "대형 천막",            expert: 7  },
+            { name: "나침반",               expert: 11 },
+            { name: "구급의약품 셋트",           expert: 10 },
+            { name: "장전된 45구경 권총",          expert: 8  },
+            { name: "낙하산 (적-백 무늬)",               expert: 5  },
+            { name: "소금 한 봉지 (1,000개 들이)",         expert: 15 },
+            { name: "1인당 2리터의 물",          expert: 3  },
+            { name: "사막여행 안내책자",        expert: 13 },
+            { name: "선글라스",             expert: 9  },
+            { name: "독한 위스키 2리터",         expert: 14 },
+            { name: "1인당 외투 한 벌",        expert: 2  },
+            { name: "화장용 손거울",        expert: 1  }
+        ];
+
+        // ── 공통 유틸 ────────────────────────────────────────────────
+        function formatDate(date) {
+            const pad = n => String(n).padStart(2, '0');
+            return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ── 세션 목록 ────────────────────────────────────────────────
+        let sessionList = [], activeSessionList = [];
+        const SELECTS_WITH_EMPTY = ['dashSessionSelect', 'resultViewSelect', 'userSessionSelect'];
+
+        window.onload = async () => {
+            if (!db) return;
+            await loadSessionList();
+        };
+
+        async function loadSessionList() {
+            try {
+                onSnapshot(doc(db, "settings", "courses"), (docSnap) => {
+                    sessionList = []; activeSessionList = [];
+                    if (docSnap.exists()) {
+                        if (docSnap.data().list)       sessionList       = docSnap.data().list;
+                        if (docSnap.data().activeList) activeSessionList = docSnap.data().activeList;
+                    }
+                    updateSelectOptions(sessionList, activeSessionList);
+                    renderAdminSessionList(sessionList, activeSessionList);
+                }, (err) => {
+                    console.error("세션 목록 수신 오류:", err);
+                    showErrorBanner();
+                });
+            } catch (e) {
+                console.error(e);
+                showErrorBanner();
+            }
+        }
+
+        function updateSelectOptions(courses, activeCourses) {
+            const selects = ['userSessionSelect', 'dashSessionSelect', 'resultViewSelect'];
+            selects.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                const current       = el.value;
+                const targetCourses = (id === 'userSessionSelect') ? activeCourses : courses;
+                const needsEmpty    = SELECTS_WITH_EMPTY.includes(id);
+                const options       = targetCourses.map(c => `<option value="${c}">${c}</option>`).join('');
+                el.innerHTML        = needsEmpty
+                    ? `<option value="">과정을 선택하세요</option>${options}`
+                    : options;
+                if (!needsEmpty && targetCourses.includes(current)) el.value = current;
+                else if (needsEmpty) el.value = "";
+            });
+        }
+
+        // ── 관리자 ───────────────────────────────────────────────────
+        window.toggleAdmin = () => { showScreen('adminScreen'); }
+
+        window.checkAdmin = () => {
+            if (document.getElementById('adminPw').value === ADMIN_PW) {
+                document.getElementById('adminLogin').style.display = 'none';
+                document.getElementById('adminPanel').style.display = 'block';
+            } else { alert("비밀번호 불일치"); }
+        }
+
+        window.addSession = async () => {
+            const name = document.getElementById('newSessionName').value.trim();
+            const cnt  = parseInt(document.getElementById('newSessionTeamCnt').value) || 7;
+            if (!name) return alert("과정명을 입력하세요.");
+            await updateDoc(doc(db, "settings", "courses"), { list: arrayUnion(name), activeList: arrayUnion(name) });
+            await setDoc(doc(db, "course_configs", name), { teamCount: cnt });
+            document.getElementById('newSessionName').value = "";
+            alert(`'${name}' 과정이 생성되었습니다. (팀: ${cnt}개)`);
+        }
+
+        window.deleteSession = async (name) => {
+            if (confirm(`'${name}' 과정을 목록에서 삭제하시겠습니까?`)) {
+                await updateDoc(doc(db, "settings", "courses"), { list: arrayRemove(name), activeList: arrayRemove(name) });
+                await deleteDoc(doc(db, "course_configs", name));
+            }
+        }
+
+        function renderAdminSessionList(courses, activeCourses) {
+            const div = document.getElementById('sessionListAdmin');
+            div.innerHTML = courses.map(c => {
+                const chk = activeCourses.includes(c) ? 'checked' : '';
+                return `
+                <div class="session-item">
+                    <label style="margin:0; display:flex; align-items:center; cursor:pointer; font-weight:normal; color:#333;">
+                        <input type="checkbox" ${chk} onchange="toggleCourseActive('${c}', this.checked)" style="width:16px; height:16px; margin:0 8px 0 0;">
+                        <span>📂 ${c}</span>
+                    </label>
+                    <button class="btn btn-red btn-sm" onclick="deleteSession('${c}')">삭제</button>
+                </div>`;
+            }).join('');
+        }
+
+        window.toggleCourseActive = async (name, isChecked) => {
+            try {
+                await updateDoc(doc(db, "settings", "courses"), {
+                    activeList: isChecked ? arrayUnion(name) : arrayRemove(name)
+                });
+            } catch (e) { console.error("상태 변경 오류:", e); }
+        }
+
+        // ── 전체 삭제 ────────────────────────────────────────────────
+        window.deleteAllDatabase = async () => {
+            if (!confirm("⚠️ 경고: 모든 과정과 점수 데이터가 삭제됩니다!")) return;
+            if (confirm("데이터 삭제 전, 모든 데이터를 CSV(엑셀)로 백업하시겠습니까?")) {
+                await exportAllDataToCSV();
+            }
+            if (!confirm("⚠️ 마지막 확인: '확인'을 누르면 모든 데이터가 영구적으로 삭제됩니다.")) return;
+            const btn = document.querySelector('.danger-zone .btn');
+            btn.innerText = "삭제 중... (화면을 닫지 마세요)";
+            btn.disabled  = true;
+            try {
+                for (const sess of sessionList) {
+                    let tCount = 7;
+                    try { const cfg = await getDoc(doc(db, "course_configs", sess)); if (cfg.exists()) tCount = cfg.data().teamCount; } catch (e) { }
+                    for (let i = 1; i <= tCount; i++) {
+                        const snap = await getDocs(collection(db, "sessions", sess, "teams", `team_${i}`, "submissions"));
+                        await Promise.all(snap.docs.map(d => deleteDoc(d.ref)));
+                    }
+                    await deleteDoc(doc(db, "course_configs", sess));
+                }
+                await setDoc(doc(db, "settings", "courses"), { list: [], activeList: [] });
+                alert("✅ 초기화 완료! 모든 데이터가 삭제되었습니다.");
+                location.reload();
+            } catch (e) {
+                console.error(e); alert("오류 발생: " + e.message);
+                btn.innerText = "⚠️ 모든 DB 데이터 및 과정 삭제"; btn.disabled = false;
+            }
+        }
+
+        // ── 통합 데이터 조회 ─────────────────────────────────────────
+        window.loadAllDataForAdmin = async () => {
+            const listDiv = document.getElementById('manageDataList');
+            listDiv.innerHTML = "<div style='text-align:center; padding:20px;'>데이터를 스캔 중입니다...</div>";
+            try {
+                let allDocs = [];
+                for (const sess of sessionList) {
+                    let tCount = 7;
+                    const cfg = await getDoc(doc(db, "course_configs", sess));
+                    if (cfg.exists()) tCount = cfg.data().teamCount;
+                    await Promise.all(Array.from({ length: tCount }, (_, i) => {
+                        const teamId = `team_${i+1}`;
+                        return getDocs(collection(db, "sessions", sess, "teams", teamId, "submissions")).then(snap => {
+                            snap.forEach(d => allDocs.push({ sess, teamName: `${i+1}팀`, teamId, id: d.id, data: d.data() }));
+                        });
+                    }));
+                }
+                allDocs.sort((a, b) => {
+                    const iA = sessionList.indexOf(a.sess), iB = sessionList.indexOf(b.sess);
+                    if (iA !== iB) return iB - iA;
+                    if (a.teamName !== b.teamName) return a.teamName.localeCompare(b.teamName, undefined, { numeric: true });
+                    return (b.data.timestamp?.toDate().getTime() ?? 0) - (a.data.timestamp?.toDate().getTime() ?? 0);
+                });
+                if (allDocs.length === 0) {
+                    listDiv.innerHTML = "<p style='text-align:center; padding:20px; color:#666;'>저장된 데이터가 없습니다.</p>";
+                    return;
+                }
+                const rows = allDocs.map(item => {
+                    const typeLabel = item.data.type === 'group'
+                        ? '<span class="role-badge role-group">집단</span>'
+                        : '<span class="role-badge role-indiv">개인</span>';
+                    const ranks = item.data.ranks ? item.data.ranks.slice(0, 5).join(", ") + ".." : "-";
+                    return `<tr>
+                        <td>${item.sess}</td><td>${item.teamName}</td>
+                        <td style="text-align:left;">${typeLabel}</td>
+                        <td class="data-preview">${ranks}</td>
+                        <td><button class="btn btn-red btn-sm" onclick="deleteDataGlobal('${item.sess}','${item.teamId}','${item.id}')">🗑️</button></td>
+                    </tr>`;
+                }).join('');
+                listDiv.innerHTML = `
+                    <table class="manage-table">
+                        <thead><tr><th>교육 과정</th><th>팀</th><th>구분</th><th>입력값 (요약)</th><th style="width:50px;">삭제</th></tr></thead>
+                        <tbody>${rows}</tbody>
+                    </table>`;
+            } catch (e) { console.error(e); listDiv.innerHTML = "오류 발생: " + e.message; }
+        }
+
+        window.deleteDataGlobal = async (sessId, teamId, docId) => {
+            if (!confirm("정말 삭제하시겠습니까?")) return;
+            try {
+                await deleteDoc(doc(db, "sessions", sessId, "teams", teamId, "submissions", docId));
+                alert("삭제되었습니다.");
+                loadAllDataForAdmin();
+            } catch (e) { alert("삭제 실패: " + e.message); }
+        }
+
+        // ── CSV 백업 ─────────────────────────────────────────────────
+        window.exportAllDataToCSV = async () => {
+            const btn = document.querySelector('.danger-zone .btn');
+            const originalText = btn ? btn.innerText : "삭제";
+            if (btn) btn.innerText = "⏳ 데이터 백업 생성 중...";
+            try {
+                let csv = "\uFEFF과정명,팀명,구분(ID),입력시간,";
+                itemsData.forEach((item, idx) => csv += `${item.name}(${idx+1}),`);
+                csv += "\n";
+                for (const sess of sessionList) {
+                    let tCount = 7;
+                    try { const cfg = await getDoc(doc(db, "course_configs", sess)); if (cfg.exists()) tCount = cfg.data().teamCount; } catch (e) { }
+                    for (let i = 1; i <= tCount; i++) {
+                        const snap = await getDocs(collection(db, "sessions", sess, "teams", `team_${i}`, "submissions"));
+                        snap.forEach(docSnap => {
+                            const d = docSnap.data();
+                            const type = d.type === 'group' ? '집단' : '개인';
+                            const role = docSnap.id === 'group_scorer' ? '서기' : docSnap.id;
+                            const timeStr = d.timestamp ? formatDate(d.timestamp.toDate()) : "-";
+                            let row = `"${sess}","${i}팀","${type}(${role})","${timeStr}",`;
+                            if (d.ranks && Array.isArray(d.ranks)) row += d.ranks.join(",");
+                            csv += row + "\n";
+                        });
+                    }
+                }
+                const fileName = `사막조난_백업_${formatDate(new Date()).replace(' ', '_').replace(':', '')}.csv`;
+                const link = Object.assign(document.createElement("a"), {
+                    href: URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' })),
+                    download: fileName, style: 'visibility:hidden'
+                });
+                document.body.appendChild(link); link.click(); document.body.removeChild(link);
+                alert(`파일이 다운로드되었습니다: ${fileName}`);
+            } catch (e) { console.error(e); alert("백업 오류: " + e.message); }
+            finally { if (btn) btn.innerText = originalText; }
+        }
+
+        // ── 참가자 세션 변경 ─────────────────────────────────────────
+        window.onUserSessionChange = async () => {
+            const sess    = document.getElementById('userSessionSelect').value;
+            const teamSel = document.getElementById('teamSelect');
+            teamSel.innerHTML = "<option value=''>팀 목록 로딩중...</option>";
+            if (!sess) return;
+            let tCount = 7;
+            try { const cfg = await getDoc(doc(db, "course_configs", sess)); if (cfg.exists()) tCount = cfg.data().teamCount; } catch (e) { }
+            teamSel.innerHTML = Array.from({ length: tCount }, (_, i) =>
+                `<option value="team_${i+1}">${i+1}팀</option>`
+            ).join('');
+        }
+
+        // ── 참가자 입장 ──────────────────────────────────────────────
+        window.enterSim = async () => {
+            const sessId   = document.getElementById('userSessionSelect').value;
+            const teamSel  = document.getElementById('teamSelect');
+            const teamVal  = teamSel.value;
+            const teamText = teamSel.options[teamSel.selectedIndex]?.text;
+            const isLeader = document.getElementById('isLeaderCheck').checked;
+            if (!sessId || !teamVal) return alert("교과과정과 팀을 선택해주세요.");
+            if (isLeader) {
+                try {
+                    const snap = await getDoc(doc(db, "sessions", sessId, "teams", teamVal, "submissions", "group_scorer"));
+                    if (snap.exists() && !confirm("이미 집단 우선순위가 입력되어 있습니다. 수정하시겠습니까?")) return;
+                } catch (e) { console.error("DB 확인 오류:", e); }
+            }
+            sessionStorage.setItem("sim_isLeader", isLeader);
+            showScreen('inputScreen');
+            document.getElementById('inputTitle').innerText = `${teamText} 입력`;
+            const badge = document.getElementById('roleBadge');
+            if (isLeader) { badge.innerText = "서기 (팀 결과 포함)"; badge.className = "badge bg-group"; }
+            else          { badge.innerText = "개인 참가자";          badge.className = "badge bg-neutral"; }
+
+            document.getElementById('inputThead').innerHTML = `<tr>
+                <th style="text-align:left;">품목</th>
+                <th class="${isLeader ? 'bg-group' : ''}">${isLeader ? '팀 합의 순위 (서기 전용)' : '나의 개인 순위'}</th>
+            </tr>`;
+
+            // [개선] inputmode="numeric" pattern="[0-9]*" → 모바일 정수 전용 키패드
+            document.getElementById('inputBody').innerHTML = itemsData.map((item, idx) => {
+                const cls = isLeader ? 'group-rank' : 'indiv-rank';
+                const bg  = isLeader ? 'style="background:#e3f2fd;"' : '';
+                return `<tr>
+                    <td style="text-align:left;">${item.name}</td>
+                    <td><input type="number" class="rank-input ${cls}" ${bg}
+                        data-idx="${idx}" min="1" max="15"
+                        inputmode="numeric" pattern="[0-9]*"
+                        oninput="checkDup(this)"></td>
+                </tr>`;
+            }).join('');
+        }
+
+        // ── 중복 체크 ────────────────────────────────────────────────
+        window.checkDup = (input) => {
+            const val = parseInt(input.value);
+            if (val > 15 || val < 1) { input.value = ""; return; }
+            const selector = input.classList.contains('group-rank') ? '.group-rank' : '.indiv-rank';
+            const all = document.querySelectorAll(selector);
+            const map = {};
+            all.forEach(el => el.classList.remove('error-input'));
+            all.forEach(el => { if (el.value) { map[el.value] = map[el.value] || []; map[el.value].push(el); } });
+            Object.values(map).forEach(g => { if (g.length > 1) g.forEach(el => el.classList.add('error-input')); });
+        }
+
+        // ── 데이터 제출 ──────────────────────────────────────────────
+        window.submitData = async () => {
+            const sessId   = document.getElementById('userSessionSelect').value;
+            const team     = document.getElementById('teamSelect').value;
+            const isLeader = (sessionStorage.getItem("sim_isLeader") === 'true');
+            const selector = isLeader ? '.group-rank' : '.indiv-rank';
+            let ranks = [], err = false;
+            document.querySelectorAll(selector).forEach(el => {
+                if (!el.value || el.classList.contains('error-input')) err = true;
+                ranks.push(parseInt(el.value));
+            });
+            if (err) return alert("1~15위 순위를 빠짐없이 중복 없이 입력해주세요.");
+            try {
+                if (isLeader) {
+                    await setDoc(doc(db, "sessions", sessId, "teams", team, "submissions", "group_scorer"),
+                        { ranks, type: 'group', timestamp: new Date() });
+                } else {
+                    await addDoc(collection(db, "sessions", sessId, "teams", team, "submissions"),
+                        { ranks, type: 'individual', timestamp: new Date() });
+                }
+                showScreen('waitScreen');
+            } catch (e) { console.error(e); alert("전송 실패: " + e.message); }
+        }
+
+        // ── [개편] 현황판 ────────────────────────────────────────────
+        let dashUnsubMap = {}; // 팀별 onSnapshot 구독 관리
+        let detailUnsub  = null;
+
+        window.viewDashboard = () => {
+            showScreen('dashScreen');
+            document.getElementById('dashSessionSelect').value = "";
+            document.getElementById('dashTeamCards').innerHTML =
+                "<p style='text-align:center; padding:30px; color:#999;'>과정을 선택하면 팀별 현황이 표시됩니다.</p>";
+            document.getElementById('dashDetail').style.display = 'none';
+            // 이전 구독 전체 해제
+            Object.values(dashUnsubMap).forEach(fn => fn());
+            dashUnsubMap = {};
+            if (detailUnsub) { detailUnsub(); detailUnsub = null; }
+        }
+
+        window.onDashSessionChange = async () => {
+            const sess     = document.getElementById('dashSessionSelect').value;
+            const cardsEl  = document.getElementById('dashTeamCards');
+            const detailEl = document.getElementById('dashDetail');
+
+            // 이전 구독 해제
+            Object.values(dashUnsubMap).forEach(fn => fn());
+            dashUnsubMap = {};
+            if (detailUnsub) { detailUnsub(); detailUnsub = null; }
+            detailEl.style.display = 'none';
+
+            if (!sess) {
+                cardsEl.innerHTML = "<p style='text-align:center; padding:30px; color:#999;'>과정을 선택하면 팀별 현황이 표시됩니다.</p>";
+                return;
+            }
+
+            let tCount = 7;
+            try { const cfg = await getDoc(doc(db, "course_configs", sess)); if (cfg.exists()) tCount = cfg.data().teamCount; } catch (e) { }
+
+            // 초기 카드 그리드 렌더링 (로딩 상태)
+            cardsEl.innerHTML = `<div class="team-card-grid">${
+                Array.from({ length: tCount }, (_, i) => `
+                    <div class="team-card status-empty" id="card_team_${i+1}"
+                         onclick="onTeamCardClick('${sess}','team_${i+1}','${i+1}팀')">
+                        <div class="card-icon">⏳</div>
+                        <div class="card-name">${i+1}팀</div>
+                        <div class="card-info">로딩 중...</div>
+                        <div><span class="card-group-badge gbadge-none">집단 대기</span></div>
+                    </div>`
+                ).join('')
+            }</div>`;
+
+            // 각 팀 실시간 구독
+            for (let i = 1; i <= tCount; i++) {
+                const teamId = `team_${i}`;
+                dashUnsubMap[teamId] = onSnapshot(
+                    collection(db, "sessions", sess, "teams", teamId, "submissions"),
+                    (snap) => updateTeamCard(teamId, i, snap)
+                );
+            }
+        }
+
+        // 팀 카드 실시간 업데이트
+        function updateTeamCard(teamId, teamNum, snap) {
+            const card = document.getElementById(`card_${teamId}`);
+            if (!card) return;
+
+            let indivCount = 0, groupDone = false;
+            snap.forEach(d => {
+                if (d.id === 'group_scorer') groupDone = true;
+                else if (d.data().type === 'individual' || !d.data().type) indivCount++;
+            });
+
+            // ✅ 완료: 집단 입력까지 완료
+            // ✏️ 진행 중: 개인 제출 있으나 집단 미입력
+            // ⏳ 대기: 아무것도 없음
+            let statusClass, icon;
+            if (groupDone)        { statusClass = 'status-done';     icon = '✅'; }
+            else if (indivCount > 0) { statusClass = 'status-progress'; icon = '✏️'; }
+            else                  { statusClass = 'status-empty';    icon = '⏳'; }
+
+            const gBadgeClass = groupDone ? 'gbadge-done' : (indivCount > 0 ? 'gbadge-waiting' : 'gbadge-none');
+            const gBadgeText  = groupDone ? '집단 완료'   : '집단 대기';
+            const indivText   = indivCount > 0 ? `개인 ${indivCount}명 제출` : '개인 미제출';
+
+            const wasSelected = card.classList.contains('selected');
+            card.className    = `team-card ${statusClass}${wasSelected ? ' selected' : ''}`;
+            card.innerHTML    = `
+                <div class="card-icon">${icon}</div>
+                <div class="card-name">${teamNum}팀</div>
+                <div class="card-info">${indivText}</div>
+                <div><span class="card-group-badge ${gBadgeClass}">${gBadgeText}</span></div>`;
+        }
+
+        // 팀 카드 클릭 → 하단 상세 순위표
+        window.onTeamCardClick = (sessId, teamId, teamName) => {
+            document.querySelectorAll('.team-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(`card_${teamId}`).classList.add('selected');
+
+            document.getElementById('dashDetailTitle').innerText = `📊 ${teamName} 상세 순위`;
+            document.getElementById('dashDetail').style.display = 'block';
+            document.getElementById('dashContent').innerHTML =
+                "<p style='text-align:center; padding:20px; color:#aaa;'>불러오는 중...</p>";
+
+            if (detailUnsub) detailUnsub();
+            detailUnsub = onSnapshot(
+                collection(db, "sessions", sessId, "teams", teamId, "submissions"),
+                (snap) => {
+                    let individuals = [], groupData = null;
+                    snap.forEach(d => {
+                        const data = d.data();
+                        if (d.id === 'group_scorer') groupData = data.ranks;
+                        else if (data.type === 'individual' || !data.type) individuals.push(data.ranks);
+                    });
+                    renderDash(individuals, groupData);
+                }
+            );
+        }
+
+        function renderDash(individuals, groupData) {
+            const div = document.getElementById('dashContent');
+            if (individuals.length === 0 && !groupData) {
+                div.innerHTML = "<p style='text-align:center; padding:20px;'>아직 입력된 데이터가 없습니다.</p>";
+                return;
+            }
+            const headers  = individuals.map((_, i) => `<th class="col-narrow">P${i+1}</th>`).join('');
+            const bodyRows = itemsData.map((item, idx) => {
+                const cells = individuals.map(ind => `<td>${ind ? ind[idx] : "-"}</td>`).join('');
+                return `<tr>
+                    <td style="text-align:left;">${item.name}</td>
+                    ${cells}
+                    <td class="bg-group">${groupData ? groupData[idx] : "-"}</td>
+                    <td>${item.expert}</td>
+                </tr>`;
+            }).join('');
+            div.innerHTML = `
+                <table>
+                    <thead><tr><th>품목</th>${headers}
+                        <th class="bg-group col-narrow">팀</th>
+                        <th class="bg-expert col-narrow">정답</th>
+                    </tr></thead>
+                    <tbody>${bodyRows}</tbody>
+                </table>`;
+        }
+
+        // ── 전체 결과 ────────────────────────────────────────────────
+        window.goToAllResultScreen = () => {
+            showScreen('allResultScreen');
+            document.getElementById('resultViewSelect').value    = "";
+            document.getElementById('allResultContent').innerHTML =
+                "<p style='text-align:center; padding:30px; color:#aaa;'>과정을 선택하면 결과가 표시됩니다.</p>";
+        }
+
+        window.loadResultTable = async () => {
+            const sessId = document.getElementById('resultViewSelect').value;
+            const div    = document.getElementById('allResultContent');
+            if (!sessId) { div.innerHTML = "<p style='text-align:center; padding:30px; color:#aaa;'>과정을 선택해주세요.</p>"; return; }
+            div.innerHTML = "데이터 분석 중...";
+            let tCount = 7;
+            try { const cfg = await getDoc(doc(db, "course_configs", sessId)); if (cfg.exists()) tCount = cfg.data().teamCount; } catch (e) { }
+            let all = [];
+            for (let i = 1; i <= tCount; i++) {
+                try {
+                    const snap = await getDocs(collection(db, "sessions", sessId, "teams", `team_${i}`, "submissions"));
+                    let m = [], g = null;
+                    snap.forEach(d => {
+                        const data = d.data(), r = data.ranks;
+                        if (r) {
+                            const err = r.reduce((a, v, k) => a + Math.abs(v - itemsData[k].expert), 0);
+                            if (d.id === 'group_scorer') g = err;
+                            else if (data.type === 'individual' || !data.type) m.push(err);
+                        }
+                    });
+                    let stat = { name: `${i}팀`, status: '대기', avg: 0, group: 0, gain: 0, best: 0, betterCnt: 0, count: 0, msg: "" };
+                    if (m.length > 0 && g !== null) {
+                        stat.status = '완료'; stat.group = g;
+                        stat.avg    = m.reduce((a, b) => a + b, 0) / m.length;
+                        stat.gain   = stat.avg - stat.group;
+                        stat.best   = Math.min(...m);
+                        stat.betterCnt = m.filter(s => s < g).length;
+                        stat.count  = m.length;
+                        if      (stat.gain > 0) stat.msg += `<div class="tag tag-good">시너지 발생</div><br>팀 토의가 효과적이었습니다.`;
+                        else if (stat.gain < 0) stat.msg += `<div class="tag tag-bad">역효과</div><br>집단 사고의 오류 가능성.`;
+                        else                    stat.msg += `<div class="tag tag-neutral">변화 없음</div>`;
+                        if (stat.best < stat.group) {
+                            stat.msg += stat.gain > 0
+                                ? `<span class="warning-text">※ 개인 최우수자의 일부 의견만 수용됨</span>`
+                                : `<span class="warning-text">※ 개인 최우수자(${stat.best}점) 의견 묵살됨</span>`;
+                        }
+                    }
+                    all.push(stat);
+                } catch (e) { }
+            }
+            const rows = all.map(t => {
+                if (t.status !== '완료') return `<tr style="color:#aaa;"><td>${t.name}</td><td colspan="7" style="text-align:left;">(입력 대기 중...)</td></tr>`;
+                const badge = t.gain > 0 ? 'bg-good' : (t.gain < 0 ? 'bg-bad' : 'bg-neutral');
+                const sign  = t.gain > 0 ? '+' : '';
+                return `<tr>
+                    <td><strong>${t.name}</strong></td><td>${t.count}명</td>
+                    <td>${t.avg.toFixed(1)}</td>
+                    <td style="color:var(--accent); font-weight:700;">${t.group}</td>
+                    <td><span class="badge ${badge}">${sign}${t.gain.toFixed(1)}</span></td>
+                    <td>${t.best}</td><td>${t.betterCnt}명</td>
+                    <td class="interpret-box">${t.msg}</td>
+                </tr>`;
+            }).join('');
+            div.innerHTML = `
+                <table>
+                    <thead><tr>
+                        <th class="col-narrow">팀</th><th class="col-narrow">인원</th>
+                        <th class="col-med">개인(평균)</th><th class="col-med">집단</th>
+                        <th class="col-med">이득</th><th class="col-med">최우수</th>
+                        <th class="col-med">초월자</th><th class="col-wide">종합 해석</th>
+                    </tr></thead>
+                    <tbody>${rows}</tbody>
+                </table>`;
+        }
+
+        window.viewAllResultsAdmin = window.goToAllResultScreen;
+
+    </script>
+</body>
+
+</html>

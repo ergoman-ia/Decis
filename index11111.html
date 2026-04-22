@@ -993,7 +993,12 @@
             </tr>`;
 
             // [개선] inputmode="numeric" pattern="[0-9]*" → 모바일 정수 전용 키패드
-            document.getElementById('inputBody').innerHTML = itemsData.map((item, idx) => {
+            // 인덱스 배열을 만들고 무작위로 섞어줍니다.
+            const shuffledIndices = Array.from({ length: itemsData.length }, (_, i) => i)
+                                         .sort(() => Math.random() - 0.5);
+
+            document.getElementById('inputBody').innerHTML = shuffledIndices.map(idx => {
+                const item = itemsData[idx]; // 섞인 인덱스를 바탕으로 원본 아이템을 가져옵니다.
                 const cls = isLeader ? 'group-rank' : 'indiv-rank';
                 const bg  = isLeader ? 'style="background:#e3f2fd;"' : '';
                 return `<tr>
@@ -1027,7 +1032,9 @@
             let ranks = [], err = false;
             document.querySelectorAll(selector).forEach(el => {
                 if (!el.value || el.classList.contains('error-input')) err = true;
-                ranks.push(parseInt(el.value));
+                // push 대신 원래 품목의 고유 인덱스(data-idx) 위치에 직접 값을 넣어줍니다.
+                const originalIdx = parseInt(el.dataset.idx);
+                ranks[originalIdx] = parseInt(el.value);
             });
             if (err) return alert("1~15위 순위를 빠짐없이 중복 없이 입력해주세요.");
             try {

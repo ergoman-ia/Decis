@@ -933,7 +933,7 @@
                         });
                     }
                 }
-                const fileName = `사막조난_백업_${formatDate(new Date()).replace(' ', '_').replace(':', '')}.csv`;
+                const fileName = `의사결정_백업_${formatDate(new Date()).replace(' ', '_').replace(':', '')}.csv`;
                 const link = Object.assign(document.createElement("a"), {
                     href: URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' })),
                     download: fileName, style: 'visibility:hidden'

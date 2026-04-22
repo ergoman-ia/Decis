@@ -607,7 +607,7 @@
                         모든 교과과정 목록과 입력된 점수 데이터를 영구적으로 삭제합니다.<br>
                         <strong>이 작업은 절대 되돌릴 수 없습니다.</strong>
                     </p>
-                    <button class="btn btn-red" onclick="deleteAllDatabase()">⚠️ 모든 DB 데이터 및 과정 삭제</button>
+                    <button class="btn btn-red" onclick="deleteAllDatabase()">⚠️ 모든 DB 데이터 저장 및 삭제</button>
                 </div>
             </div>
         </div>
@@ -914,7 +914,7 @@
                 location.reload();
             } catch (e) {
                 console.error(e); alert("오류 발생: " + e.message);
-                btn.innerText = "⚠️ 모든 DB 데이터 및 과정 삭제"; btn.disabled = false;
+                btn.innerText = "⚠️ 모든 DB 데이터 저장 및 삭제"; btn.disabled = false;
             }
         }
 

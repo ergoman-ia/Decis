@@ -991,7 +991,7 @@
                         snap.forEach(docSnap => {
                             const d = docSnap.data();
                             const type = d.type === 'group' ? '집단' : '개인';
-                            const role = docSnap.id === 'group_scorer' ? '서기' : docSnap.id;
+                            const role = docSnap.id === 'group_scorer' ? '팀장' : docSnap.id;
                             const timeStr = d.timestamp ? formatDate(d.timestamp.toDate()) : "-";
                             let row = `"${sess}","${i}팀","${type}(${role})","${timeStr}",`;
                             if (d.ranks && Array.isArray(d.ranks)) row += d.ranks.join(",");
@@ -1046,12 +1046,12 @@
             showScreen('inputScreen');
             document.getElementById('inputTitle').innerText = `${teamText} 입력`;
             const badge = document.getElementById('roleBadge');
-            if (isLeader) { badge.innerText = "서기 (팀 결과 포함)"; badge.className = "badge bg-group"; }
+            if (isLeader) { badge.innerText = "팀장 (팀 결과 포함)"; badge.className = "badge bg-group"; }
             else { badge.innerText = "개인 참가자"; badge.className = "badge bg-neutral"; }
 
             document.getElementById('inputThead').innerHTML = `<tr>
                 <th style="text-align:left;">품목</th>
-                <th class="${isLeader ? 'bg-group' : ''}">${isLeader ? '팀 합의 순위 (서기 전용)' : '나의 개인 순위'}</th>
+                <th class="${isLeader ? 'bg-group' : ''}">${isLeader ? '팀 합의 순위 (팀장)' : '나의 개인 순위'}</th>
             </tr>`;
 
             // [개선] inputmode="numeric" pattern="[0-9]*" → 모바일 정수 전용 키패드

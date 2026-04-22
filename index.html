@@ -379,13 +379,26 @@
             margin-bottom: 10px;
         }
 
-        /* 모바일 */
+         /* 모바일 */
         @media (max-width: 600px) {
-            .header-top { flex-direction: column; align-items: flex-start; }
-            .admin-link  { font-size: 0.85rem; align-self: flex-end; }
-            h1           { font-size: 1.5rem; }
-            .team-card-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .admin-link {
+                display: none !important;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .team-card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            }
         }
+
     </style>
 </head>
 

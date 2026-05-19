@@ -1025,17 +1025,24 @@
                     const typeLabel = item.data.type === 'group'
                         ? '<span class="role-badge role-group">집단</span>'
                         : '<span class="role-badge role-indiv">개인</span>';
-                    const ranks = item.data.ranks ? item.data.ranks.slice(0, 5).join(", ") + ".." : "-";
+                    const ranks = item.data.ranks ? item.data.ranks.join(", ") : "-";  // ✅ 전체 표시
                     return `<tr>
-                        <td>${item.sess}</td><td>${item.teamName}</td>
-                        <td style="text-align:left;">${typeLabel}</td>
-                        <td class="data-preview">${ranks}</td>
-                        <td><button class="btn btn-red btn-sm" onclick="deleteDataGlobal('${item.sess}','${item.teamId}','${item.id}')">🗑️</button></td>
-                    </tr>`;
+    <td style="white-space:nowrap; font-size:0.8rem;">${item.sess}</td>
+    <td style="width:40px;">${item.teamName}</td>                   // ✅ 팀 폭 축소
+    <td style="width:50px; text-align:left;">${typeLabel}</td>      // ✅ 구분 폭 축소
+    <td class="data-preview" style="font-size:0.8rem; letter-spacing:-0.3px;">${ranks}</td>  // ✅ 전체 표시
+    <td style="width:40px;"><button class="btn btn-red btn-sm" onclick="deleteDataGlobal('${item.sess}','${item.teamId}','${item.id}')">🗑️</button></td>
+</tr>`;
                 }).join('');
                 listDiv.innerHTML = `
                     <table class="manage-table">
-                        <thead><tr><th>교육 과정</th><th>팀</th><th>구분</th><th>입력값 (요약)</th><th style="width:50px;">삭제</th></tr></thead>
+                        <thead><tr>
+    <th>교육 과정</th>
+    <th style="width:40px;">팀</th>       // ✅ 폭 축소
+    <th style="width:50px;">구분</th>     // ✅ 폭 축소
+    <th>입력값 (1~15번 품목 순서)</th>    // ✅ 헤더 설명 변경
+    <th style="width:40px;">삭제</th>
+</tr></thead>
                         <tbody>${rows}</tbody>
                     </table>`;
             } catch (e) { console.error(e); listDiv.innerHTML = "오류 발생: " + e.message; }

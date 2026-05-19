@@ -66,18 +66,29 @@
             transition: color 0.3s;
         }
 
-        .admin-link:hover { color: var(--accent); }
+        .admin-link:hover {
+            color: var(--accent);
+        }
 
         .screen {
             display: none;
             animation: fadeIn 0.4s ease-out;
         }
 
-        .active { display: block; }
+        .active {
+            display: block;
+        }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         label {
@@ -88,7 +99,8 @@
             font-size: 0.95rem;
         }
 
-        select, input {
+        select,
+        input {
             width: 100%;
             padding: 12px 15px;
             margin-bottom: 20px;
@@ -99,7 +111,8 @@
             background-color: #fff;
         }
 
-        select:focus, input:focus {
+        select:focus,
+        input:focus {
             border-color: var(--accent);
             outline: none;
         }
@@ -117,14 +130,34 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
-        .btn:hover { transform: translateY(-2px); }
+        .btn:hover {
+            transform: translateY(-2px);
+        }
 
-        .btn-blue   { background-color: var(--accent); }
-        .btn-green  { background-color: var(--success); }
-        .btn-gray   { background-color: #95a5a6; }
-        .btn-red    { background-color: var(--danger); }
-        .btn-purple { background-color: #8e44ad; }
-        .btn-orange { background-color: var(--warning); color: #fff; }
+        .btn-blue {
+            background-color: var(--accent);
+        }
+
+        .btn-green {
+            background-color: var(--success);
+        }
+
+        .btn-gray {
+            background-color: #95a5a6;
+        }
+
+        .btn-red {
+            background-color: var(--danger);
+        }
+
+        .btn-purple {
+            background-color: #8e44ad;
+        }
+
+        .btn-orange {
+            background-color: var(--warning);
+            color: #fff;
+        }
 
         .btn-sm {
             width: auto;
@@ -179,7 +212,8 @@
             font-size: 0.95rem;
         }
 
-        th, td {
+        th,
+        td {
             padding: 8px 4px;
             text-align: center;
             border-bottom: 1px solid #eee;
@@ -194,9 +228,17 @@
             border-bottom: 2px solid #ddd;
         }
 
-        .col-narrow { width: 60px; }
-        .col-med    { width: 100px; }
-        .col-wide   { width: auto; }
+        .col-narrow {
+            width: 60px;
+        }
+
+        .col-med {
+            width: 100px;
+        }
+
+        .col-wide {
+            width: auto;
+        }
 
         .bg-group {
             background-color: #e3f2fd;
@@ -225,9 +267,20 @@
             margin-bottom: 4px;
         }
 
-        .tag-good    { background: #d4edda; color: #155724; }
-        .tag-bad     { background: #f8d7da; color: #721c24; }
-        .tag-neutral { background: #e2e3e5; color: #383d41; }
+        .tag-good {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .tag-bad {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .tag-neutral {
+            background: #e2e3e5;
+            color: #383d41;
+        }
 
         .warning-text {
             color: #c0392b;
@@ -252,9 +305,17 @@
             min-width: 30px;
         }
 
-        .bg-good    { background-color: var(--success); }
-        .bg-bad     { background-color: var(--danger); }
-        .bg-neutral { background-color: #95a5a6; }
+        .bg-good {
+            background-color: var(--success);
+        }
+
+        .bg-bad {
+            background-color: var(--danger);
+        }
+
+        .bg-neutral {
+            background-color: #95a5a6;
+        }
 
         .session-item {
             display: flex;
@@ -264,9 +325,19 @@
             border-bottom: 1px solid #eee;
         }
 
-        .manage-table th { background-color: #34495e; color: white; }
-        .manage-table td { font-size: 0.9rem; vertical-align: middle; }
-        .manage-table tr:hover { background-color: #f1f1f1; }
+        .manage-table th {
+            background-color: #34495e;
+            color: white;
+        }
+
+        .manage-table td {
+            font-size: 0.9rem;
+            vertical-align: middle;
+        }
+
+        .manage-table tr:hover {
+            background-color: #f1f1f1;
+        }
 
         .role-badge {
             display: inline-block;
@@ -276,8 +347,15 @@
             font-weight: bold;
         }
 
-        .role-group { background: #e3f2fd; color: #3498db; }
-        .role-indiv { background: #f5f5f5; color: #666; }
+        .role-group {
+            background: #e3f2fd;
+            color: #3498db;
+        }
+
+        .role-indiv {
+            background: #f5f5f5;
+            color: #666;
+        }
 
         .data-preview {
             font-family: monospace;
@@ -296,11 +374,20 @@
         }
 
         /* 입력 테이블 컬럼 비율 */
-        #inputTable colgroup { display: none; }
+        #inputTable colgroup {
+            display: none;
+        }
+
         #inputTable th:first-child,
-        #inputTable td:first-child { width: 70%; text-align: left; }
+        #inputTable td:first-child {
+            width: 70%;
+            text-align: left;
+        }
+
         #inputTable th:last-child,
-        #inputTable td:last-child  { width: 30%; }
+        #inputTable td:last-child {
+            width: 30%;
+        }
 
         .rank-input {
             width: 100% !important;
@@ -338,19 +425,51 @@
             transition: all 0.2s;
         }
 
-        .team-card:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
-        .team-card.selected { border-color: var(--accent) !important; box-shadow: 0 0 0 3px rgba(52,152,219,0.25); }
+        .team-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-card.selected {
+            border-color: var(--accent) !important;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.25);
+        }
 
         /* 완료: 집단 입력까지 완료 */
-        .team-card.status-done     { background: #f0faf3; border-color: #a8d8b5; }
-        /* 진행 중: 개인 제출은 있으나 집단 미입력 */
-        .team-card.status-progress { background: #fffbf0; border-color: #f5d98a; }
-        /* 미입력: 아무것도 없음 */
-        .team-card.status-empty    { background: #f8f9fa; border-color: #ddd; }
+        .team-card.status-done {
+            background: #f0faf3;
+            border-color: #a8d8b5;
+        }
 
-        .team-card .card-icon  { font-size: 1.6rem; margin-bottom: 6px; }
-        .team-card .card-name  { font-weight: 700; font-size: 1rem; color: var(--primary); margin-bottom: 6px; }
-        .team-card .card-info  { font-size: 0.8rem; color: #666; line-height: 1.7; }
+        /* 진행 중: 개인 제출은 있으나 집단 미입력 */
+        .team-card.status-progress {
+            background: #fffbf0;
+            border-color: #f5d98a;
+        }
+
+        /* 미입력: 아무것도 없음 */
+        .team-card.status-empty {
+            background: #f8f9fa;
+            border-color: #ddd;
+        }
+
+        .team-card .card-icon {
+            font-size: 1.6rem;
+            margin-bottom: 6px;
+        }
+
+        .team-card .card-name {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .team-card .card-info {
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.7;
+        }
 
         .card-group-badge {
             display: inline-block;
@@ -361,9 +480,20 @@
             font-weight: 700;
         }
 
-        .gbadge-done    { background: #d4edda; color: #155724; }
-        .gbadge-waiting { background: #fff3cd; color: #856404; }
-        .gbadge-none    { background: #e2e3e5; color: #495057; }
+        .gbadge-done {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .gbadge-waiting {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .gbadge-none {
+            background: #e2e3e5;
+            color: #495057;
+        }
 
         /* 팀 상세 영역 */
         .dash-detail {
@@ -379,7 +509,7 @@
             margin-bottom: 10px;
         }
 
-         /* 모바일 */
+        /* 모바일 */
         @media (max-width: 600px) {
             .header-top {
                 flex-direction: column;
@@ -398,7 +528,6 @@
                 grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
             }
         }
-
     </style>
 </head>
 
@@ -430,12 +559,14 @@
                 </div>
 
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;">
-                    <div class="card" style="margin:0; border-left:5px solid var(--accent); display:flex; flex-direction:column;">
+                    <div class="card"
+                        style="margin:0; border-left:5px solid var(--accent); display:flex; flex-direction:column;">
                         <h4 style="margin:0 0 15px 0; color:var(--accent);">📚 교과과정 및 팀 설정</h4>
                         <label style="font-size:0.85rem;">새 과정 추가 (팀 개수 지정)</label>
                         <div style="display:flex; gap:10px; margin-bottom:10px;">
-                            <input type="text"   id="newSessionName"    placeholder="예: 1차_신입교육" style="margin:0; flex:2;">
-                            <input type="number" id="newSessionTeamCnt" placeholder="팀 수" value="7"  style="margin:0; width:80px; flex:1;">
+                            <input type="text" id="newSessionName" placeholder="예: 1차_신입교육" style="margin:0; flex:2;">
+                            <input type="number" id="newSessionTeamCnt" placeholder="팀 수" value="7"
+                                style="margin:0; width:80px; flex:1;">
                             <button class="btn btn-blue btn-sm" onclick="addSession()">추가</button>
                         </div>
                         <select id="newSessionScenario" style="margin:0 0 10px 0;">
@@ -444,19 +575,23 @@
                             <option value="winter">❄️ 동계(설원)에서 생존 게임</option>
                             <option value="jungle">🌿 정글에서 생존 게임</option>
                         </select>
-                        <div style="flex-grow:1; max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px;">
+                        <div
+                            style="flex-grow:1; max-height:200px; overflow-y:auto; border:1px solid #eee; border-radius:8px;">
                             <div id="sessionListAdmin"></div>
                         </div>
                     </div>
 
-                    <div class="card" style="margin:0; border-left:5px solid var(--warning); display:flex; flex-direction:column; justify-content:center; text-align:center;">
+                    <div class="card"
+                        style="margin:0; border-left:5px solid var(--warning); display:flex; flex-direction:column; justify-content:center; text-align:center;">
                         <h4 style="margin:0 0 20px 0; color:var(--warning);">📊 결과 분석 센터</h4>
                         <p style="color:#666; font-size:0.9rem; margin-bottom:20px;">
                             입력된 데이터를 바탕으로<br>팀별 시너지와 개인 역량을 분석합니다.
                         </p>
                         <div style="display:flex; flex-direction:column; gap:15px; align-items:center;">
-                            <button class="btn btn-purple" onclick="goToAllResultScreen()" style="width:80%;">🏆 전체 종합 결과 (해석 포함)</button>
-                            <button class="btn btn-gray"   onclick="viewDashboard()"       style="width:80%;">👀 팀별 입력 현황판</button>
+                            <button class="btn btn-purple" onclick="goToAllResultScreen()" style="width:80%;">🏆 전체 종합
+                                결과 (해석 포함)</button>
+                            <button class="btn btn-gray" onclick="viewDashboard()" style="width:80%;">👀 팀별 입력
+                                현황판</button>
                         </div>
                     </div>
                 </div>
@@ -467,7 +602,8 @@
                         <button class="btn btn-gray btn-sm" onclick="loadAllDataForAdmin()">🔄 전체 데이터 조회</button>
                     </div>
                     <div id="manageDataList" class="table-wrap" style="max-height:300px; overflow-y:auto;">
-                        <p style="text-align:center; padding:20px; color:#aaa;">조회 버튼을 누르면 입력된 모든 데이터를 확인하고 삭제할 수 있습니다.</p>
+                        <p style="text-align:center; padding:20px; color:#aaa;">조회 버튼을 누르면 입력된 모든 데이터를 확인하고 삭제할 수 있습니다.
+                        </p>
                     </div>
                 </div>
 
@@ -486,7 +622,8 @@
         <div id="joinScreen" class="screen active">
             <div class="card" style="max-width:500px; margin:40px auto; text-align:center;">
                 <h3 style="margin-top:0;">👋 참가자 입장</h3>
-                <p style="color:#666; font-size:0.95rem;">관리자가 개설한 과정을 선택하세요. <br> 철저히 <span style="color:darkred; font-weight:bold;">익명</span>으로 진행됩니다.</p>
+                <p style="color:#666; font-size:0.95rem;">관리자가 개설한 과정을 선택하세요. <br> 철저히 <span
+                        style="color:darkred; font-weight:bold;">익명</span>으로 진행됩니다.</p>
 
                 <div style="text-align:left; margin-top:30px;">
                     <label>📌 교과과정</label>
@@ -503,7 +640,8 @@
                         <input type="checkbox" id="isLeaderCheck">
                         <label for="isLeaderCheck">
                             팀장 (팀 점수 입력)
-                            <br><span style="font-size:0.8rem; color:#888; font-weight:normal;">* 팀 토론 결과를 한 분만 추가로 입력합니다.</span>
+                            <br><span style="font-size:0.8rem; color:#888; font-weight:normal;">* 팀 토론 결과를 한 분만 추가로
+                                입력합니다.</span>
                         </label>
                     </div>
                 </div>
@@ -522,12 +660,13 @@
                     </div>
                 </div>
 
-                <div style="background:#eef2f5; padding:15px; border-radius:8px; margin-bottom:20px; font-size:0.9rem; border-left:4px solid var(--primary); line-height:1.6;">
-    <strong>[입력 가이드]</strong><br>
-    <span id="guideScenarioText">사막</span> 조난 상황에서 살기 위해 가장 중요한 품목부터 번호를 입력해 주세요.<br>
-    1위(가장 중요) ~ 15위(가장 덜 중요)를 중복 없이 입력하세요.<br>
-    <span style="color:red;">수정이 불가하오니, 꼼꼼히 확인 후 제출 바랍니다.</span>
-</div>
+                <div
+                    style="background:#eef2f5; padding:15px; border-radius:8px; margin-bottom:20px; font-size:0.9rem; border-left:4px solid var(--primary); line-height:1.6;">
+                    <strong>[입력 가이드]</strong><br>
+                    <span id="guideScenarioText">사막</span> 조난 상황에서 살기 위해 가장 중요한 품목부터 번호를 입력해 주세요.<br>
+                    1위(가장 중요) ~ 15위(가장 덜 중요)를 중복 없이 입력하세요.<br>
+                    <span style="color:red;">수정이 불가하오니, 꼼꼼히 확인 후 제출 바랍니다.</span>
+                </div>
 
                 <div class="table-wrap">
                     <table id="inputTable">
@@ -538,7 +677,7 @@
 
                 <div style="margin-top:20px; display:flex; gap:10px;">
                     <button class="btn btn-green" onclick="submitData()">💾 순위 제출</button>
-                    <button class="btn btn-gray"  onclick="location.reload()">취소</button>
+                    <button class="btn btn-gray" onclick="location.reload()">취소</button>
                 </div>
             </div>
         </div>
@@ -550,7 +689,8 @@
                 <h2 style="color:var(--success); margin:0;">제출 완료</h2>
                 <p style="font-size:1.1rem; color:#555;">입력하신 순위가 안전하게 저장되었습니다.</p>
                 <hr style="width:50px; margin:20px auto; border-top:2px solid #eee;">
-                <button class="btn btn-outline btn-sm" onclick="location.reload()" style="margin-top:30px;">처음 화면으로</button>
+                <button class="btn btn-outline btn-sm" onclick="location.reload()" style="margin-top:30px;">처음
+                    화면으로</button>
             </div>
         </div>
 
@@ -589,9 +729,11 @@
                     <button class="btn btn-outline btn-sm" onclick="toggleAdmin()">돌아가기</button>
                 </div>
 
-                <div style="background:#f0f8ff; padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid #b6e0fe;">
+                <div
+                    style="background:#f0f8ff; padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid #b6e0fe;">
                     <label style="margin-bottom:5px; font-size:0.9rem;">📂 분석할 교과과정을 선택하세요</label>
-                    <select id="resultViewSelect" onchange="loadResultTable()" style="margin:0; font-weight:bold; color:var(--accent);">
+                    <select id="resultViewSelect" onchange="loadResultTable()"
+                        style="margin:0; font-weight:bold; color:var(--accent);">
                         <option value="">선택...</option>
                     </select>
                 </div>
@@ -614,7 +756,7 @@
         let app, db;
         try {
             app = initializeApp(FIREBASE_CONFIG);
-            db  = getFirestore(app);
+            db = getFirestore(app);
         } catch (e) {
             console.error("Firebase 초기화 실패:", e);
             showErrorBanner();
@@ -633,81 +775,81 @@
             desert: {
                 label: "🌵 사막에서 생존 게임",
                 items: [
-                    { name: "화장용 손거울",               expert: 1  },
-                    { name: "1인당 외투 한 벌",            expert: 2  },
-                    { name: "1인당 2리터의 물",            expert: 3  },
-                    { name: "손전등 (배터리 포함)",         expert: 4  },
-                    { name: "낙하산 (빨강/흰색)",           expert: 5  },
-                    { name: "주머니칼",                    expert: 6  },
-                    { name: "대형 천막",                   expert: 7  },
-                    { name: "권총 (45구경)",                expert: 8  },
-                    { name: "선글라스",                    expert: 9  },
-                    { name: "구급함 (붕대 등)",             expert: 10 },
-                    { name: "나침반",                      expert: 11 },
-                    { name: "비행 구역 지도",               expert: 12 },
-                    { name: "책 (사막의 식용 식물)",        expert: 13 },
-                    { name: "보드카 2리터",                 expert: 14 },
-                    { name: "소금 알약",                   expert: 15 }
+                    { name: "화장용 손거울", expert: 1 },
+                    { name: "1인당 외투 한 벌", expert: 2 },
+                    { name: "1인당 2리터의 물", expert: 3 },
+                    { name: "손전등 (배터리 포함)", expert: 4 },
+                    { name: "낙하산 (빨강/흰색)", expert: 5 },
+                    { name: "주머니칼", expert: 6 },
+                    { name: "대형 천막", expert: 7 },
+                    { name: "권총 (45구경)", expert: 8 },
+                    { name: "선글라스", expert: 9 },
+                    { name: "구급함 (붕대 등)", expert: 10 },
+                    { name: "나침반", expert: 11 },
+                    { name: "비행 구역 지도", expert: 12 },
+                    { name: "책 (사막의 식용 식물)", expert: 13 },
+                    { name: "보드카 2리터", expert: 14 },
+                    { name: "소금 알약", expert: 15 }
                 ]
             },
             pacific: {
                 label: "🌊 남태평양에서 생존 게임",
                 items: [
-                    { name: "면도용 거울",                  expert: 1  },
-                    { name: "석유 혼합물 (기름+가스, 6L)",  expert: 2  },
-                    { name: "식수 깡통 (19L)",              expert: 3  },
-                    { name: "미군용 비상 식량",             expert: 4  },
-                    { name: "플라스틱 판 (2제곱미터)",      expert: 5  },
-                    { name: "초코바 (두 상자)",             expert: 6  },
-                    { name: "낚시 도구",                    expert: 7  },
-                    { name: "나일론 로프 (5m)",             expert: 8  },
-                    { name: "해양구조용 시트 쿠션",         expert: 9  },
-                    { name: "상어 퇴치제",                  expert: 10 },
-                    { name: "독주 (80도 럼주)",             expert: 11 },
-                    { name: "소형 라디오",                  expert: 12 },
-                    { name: "태평양 지도",                  expert: 13 },
-                    { name: "모기장",                       expert: 14 },
-                    { name: "육분의",                       expert: 15 }
+                    { name: "면도용 거울", expert: 1 },
+                    { name: "석유 혼합물 (기름+가스, 6L)", expert: 2 },
+                    { name: "식수 깡통 (19L)", expert: 3 },
+                    { name: "미군용 비상 식량", expert: 4 },
+                    { name: "플라스틱 판 (2제곱미터)", expert: 5 },
+                    { name: "초코바 (두 상자)", expert: 6 },
+                    { name: "낚시 도구", expert: 7 },
+                    { name: "나일론 로프 (5m)", expert: 8 },
+                    { name: "해양구조용 시트 쿠션", expert: 9 },
+                    { name: "상어 퇴치제", expert: 10 },
+                    { name: "독주 (80도 럼주)", expert: 11 },
+                    { name: "소형 라디오", expert: 12 },
+                    { name: "태평양 지도", expert: 13 },
+                    { name: "모기장", expert: 14 },
+                    { name: "육분의", expert: 15 }
                 ]
             },
             winter: {
                 label: "❄️ 동계(설원)에서 생존 게임",
                 items: [
-                    { name: "도끼",                         expert: 1  },
-                    { name: "라이터/성냥",                  expert: 2  },
-                    { name: "침낭",                         expert: 3  },
-                    { name: "캔에 든 초콜릿",               expert: 4  },
-                    { name: "폐지용 신문지 (한 상자)",      expert: 5  },
-                    { name: "손전등",                       expert: 6  },
-                    { name: "나침반",                       expert: 7  },
-                    { name: "캔버스 시트 (두툼한 천 묶음)", expert: 8  },
-                    { name: "구급함 (항생제)",              expert: 9  },
-                    { name: "주머니칼",                     expert: 10 },
-                    { name: "권총 (45구경)",                expert: 11 },
-                    { name: "등산용 로프 (5m)",             expert: 12 },
-                    { name: "캐나다 여행지도",              expert: 13 },
-                    { name: "위스키 (20L)",                 expert: 14 },
-                    { name: "소형 손거울",                  expert: 15 }
+                    { name: "도끼", expert: 1 },
+                    { name: "라이터/성냥", expert: 2 },
+                    { name: "침낭", expert: 3 },
+                    { name: "캔에 든 초콜릿", expert: 4 },
+                    { name: "폐지용 신문지 (한 상자)", expert: 5 },
+                    { name: "손전등", expert: 6 },
+                    { name: "나침반", expert: 7 },
+                    { name: "캔버스 시트 (두툼한 천 묶음)", expert: 8 },
+                    { name: "구급함 (항생제)", expert: 9 },
+                    { name: "주머니칼", expert: 10 },
+                    { name: "권총 (45구경)", expert: 11 },
+                    { name: "등산용 로프 (5m)", expert: 12 },
+                    { name: "캐나다 여행지도", expert: 13 },
+                    { name: "위스키 (20L)", expert: 14 },
+                    { name: "소형 손거울", expert: 15 }
                 ]
             },
             jungle: {
                 label: "🌿 정글에서 생존 게임",
                 items: [
-                    { name: "마체테 (정글도)",              expert: 1  },
-                    { name: "모기장",                       expert: 2  },
-                    { name: "수질 정화제",                  expert: 3  },
-                    { name: "구급함 (항생제)",              expert: 4  },
-                    { name: "화장용 소형 거울",             expert: 5  },
-                    { name: "비상 식량",                    expert: 6  },
-                    { name: "라이터/성냥",                  expert: 7  },
-                    { name: "나침반",                       expert: 8  },
-                    { name: "나일론 로프 (5m)",             expert: 9  },
-                    { name: "호루라기",                     expert: 10 },
-                    { name: "손전등",                       expert: 11 },
-                    { name: "정글 지도",                    expert: 12 },
-                    { name: "낚시 도구",                    expert: 13 },
-                    { name: "권총 (45구경)",                expert: 14 },
-                    { name: "비누",                         expert: 15 }
+                    { name: "마체테 (정글도)", expert: 1 },
+                    { name: "모기장", expert: 2 },
+                    { name: "수질 정화제", expert: 3 },
+                    { name: "구급함 (항생제)", expert: 4 },
+                    { name: "화장용 소형 거울", expert: 5 },
+                    { name: "비상 식량", expert: 6 },
+                    { name: "라이터/성냥", expert: 7 },
+                    { name: "나침반", expert: 8 },
+                    { name: "나일론 로프 (5m)", expert: 9 },
+                    { name: "호루라기", expert: 10 },
+                    { name: "손전등", expert: 11 },
+                    { name: "정글 지도", expert: 12 },
+                    { name: "낚시 도구", expert: 13 },
+                    { name: "권총 (45구경)", expert: 14 },
+                    { name: "비누", expert: 15 }
                 ]
             }
         };
@@ -718,7 +860,7 @@
         // ── 공통 유틸 ────────────────────────────────────────────────
         function formatDate(date) {
             const pad = n => String(n).padStart(2, '0');
-            return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
         }
 
         function showScreen(id) {
@@ -740,7 +882,7 @@
                 onSnapshot(doc(db, "settings", "courses"), (docSnap) => {
                     sessionList = []; activeSessionList = [];
                     if (docSnap.exists()) {
-                        if (docSnap.data().list)       sessionList       = docSnap.data().list;
+                        if (docSnap.data().list) sessionList = docSnap.data().list;
                         if (docSnap.data().activeList) activeSessionList = docSnap.data().activeList;
                     }
                     updateSelectOptions(sessionList, activeSessionList);
@@ -760,11 +902,11 @@
             selects.forEach(id => {
                 const el = document.getElementById(id);
                 if (!el) return;
-                const current       = el.value;
+                const current = el.value;
                 const targetCourses = (id === 'userSessionSelect') ? activeCourses : courses;
-                const needsEmpty    = SELECTS_WITH_EMPTY.includes(id);
-                const options       = targetCourses.slice().reverse().map(c => `<option value="${c}">${c}</option>`).join('');
-                el.innerHTML        = needsEmpty
+                const needsEmpty = SELECTS_WITH_EMPTY.includes(id);
+                const options = targetCourses.slice().reverse().map(c => `<option value="${c}">${c}</option>`).join('');
+                el.innerHTML = needsEmpty
                     ? `<option value="">과정을 선택하세요</option>${options}`
                     : options;
                 if (!needsEmpty && targetCourses.includes(current)) el.value = current;
@@ -783,8 +925,8 @@
         }
 
         window.addSession = async () => {
-            const name     = document.getElementById('newSessionName').value.trim();
-            const cnt      = parseInt(document.getElementById('newSessionTeamCnt').value) || 7;
+            const name = document.getElementById('newSessionName').value.trim();
+            const cnt = parseInt(document.getElementById('newSessionTeamCnt').value) || 7;
             const scenario = document.getElementById('newSessionScenario').value;
             if (!name) return alert("과정명을 입력하세요.");
             await updateDoc(doc(db, "settings", "courses"), { list: arrayUnion(name), activeList: arrayUnion(name) });
@@ -832,7 +974,7 @@
             if (!confirm("⚠️ 마지막 확인: '확인'을 누르면 모든 데이터가 영구적으로 삭제됩니다.")) return;
             const btn = document.querySelector('.danger-zone .btn');
             btn.innerText = "삭제 중... (화면을 닫지 마세요)";
-            btn.disabled  = true;
+            btn.disabled = true;
             try {
                 for (const sess of sessionList) {
                     let tCount = 7;
@@ -863,9 +1005,9 @@
                     const cfg = await getDoc(doc(db, "course_configs", sess));
                     if (cfg.exists()) tCount = cfg.data().teamCount;
                     await Promise.all(Array.from({ length: tCount }, (_, i) => {
-                        const teamId = `team_${i+1}`;
+                        const teamId = `team_${i + 1}`;
                         return getDocs(collection(db, "sessions", sess, "teams", teamId, "submissions")).then(snap => {
-                            snap.forEach(d => allDocs.push({ sess, teamName: `${i+1}팀`, teamId, id: d.id, data: d.data() }));
+                            snap.forEach(d => allDocs.push({ sess, teamName: `${i + 1}팀`, teamId, id: d.id, data: d.data() }));
                         });
                     }));
                 }
@@ -915,7 +1057,7 @@
             if (btn) btn.innerText = "⏳ 데이터 백업 생성 중...";
             try {
                 let csv = "\uFEFF과정명,팀명,구분(ID),입력시간,";
-                itemsData.forEach((item, idx) => csv += `${item.name}(${idx+1}),`);
+                itemsData.forEach((item, idx) => csv += `${item.name}(${idx + 1}),`);
                 csv += "\n";
                 for (const sess of sessionList) {
                     let tCount = 7;
@@ -946,7 +1088,7 @@
 
         // ── 참가자 세션 변경 ─────────────────────────────────────────
         window.onUserSessionChange = async () => {
-            const sess    = document.getElementById('userSessionSelect').value;
+            const sess = document.getElementById('userSessionSelect').value;
             const teamSel = document.getElementById('teamSelect');
             teamSel.innerHTML = "<option value=''>팀 목록 로딩중...</option>";
             if (!sess) return;
@@ -954,29 +1096,29 @@
             try {
                 const cfg = await getDoc(doc(db, "course_configs", sess));
                 if (cfg.exists()) {
-                    tCount   = cfg.data().teamCount  || 7;
-                    scenario = cfg.data().scenario   || 'desert';
+                    tCount = cfg.data().teamCount || 7;
+                    scenario = cfg.data().scenario || 'desert';
                 }
             } catch (e) { }
             // 시나리오에 따라 품목 데이터 및 타이틀 교체
             itemsData = scenarios[scenario]?.items ?? scenarios.desert.items;
             document.getElementById('simTitle').innerText = scenarios[scenario]?.label ?? scenarios.desert.label;
-            
+
             // [추가] 시나리오에 따라 입력 가이드 텍스트 자동 변경
             const scenarioNames = { desert: '사막', pacific: '남태평양', winter: '동계(설원)', jungle: '정글' };
             const guideEl = document.getElementById('guideScenarioText');
             if (guideEl) guideEl.innerText = scenarioNames[scenario] || '사막';
 
             teamSel.innerHTML = Array.from({ length: tCount }, (_, i) =>
-                `<option value="team_${i+1}">${i+1}팀</option>`
+                `<option value="team_${i + 1}">${i + 1}팀</option>`
             ).join('');
         }
 
         // ── 참가자 입장 ──────────────────────────────────────────────
         window.enterSim = async () => {
-            const sessId   = document.getElementById('userSessionSelect').value;
-            const teamSel  = document.getElementById('teamSelect');
-            const teamVal  = teamSel.value;
+            const sessId = document.getElementById('userSessionSelect').value;
+            const teamSel = document.getElementById('teamSelect');
+            const teamVal = teamSel.value;
             const teamText = teamSel.options[teamSel.selectedIndex]?.text;
             const isLeader = document.getElementById('isLeaderCheck').checked;
             if (!sessId || !teamVal) return alert("교과과정과 팀을 선택해주세요.");
@@ -991,7 +1133,7 @@
             document.getElementById('inputTitle').innerText = `${teamText} 입력`;
             const badge = document.getElementById('roleBadge');
             if (isLeader) { badge.innerText = "팀장 (팀 결과 포함)"; badge.className = "badge bg-group"; }
-            else          { badge.innerText = "개인 참가자";          badge.className = "badge bg-neutral"; }
+            else { badge.innerText = "개인 참가자"; badge.className = "badge bg-neutral"; }
 
             document.getElementById('inputThead').innerHTML = `<tr>
                 <th style="text-align:left;">품목</th>
@@ -1001,12 +1143,12 @@
             // [개선] inputmode="numeric" pattern="[0-9]*" → 모바일 정수 전용 키패드
             // 인덱스 배열을 만들고 무작위로 섞어줍니다.
             const shuffledIndices = Array.from({ length: itemsData.length }, (_, i) => i)
-                                         .sort(() => Math.random() - 0.5);
+                .sort(() => Math.random() - 0.5);
 
             document.getElementById('inputBody').innerHTML = shuffledIndices.map(idx => {
                 const item = itemsData[idx]; // 섞인 인덱스를 바탕으로 원본 아이템을 가져옵니다.
                 const cls = isLeader ? 'group-rank' : 'indiv-rank';
-                const bg  = isLeader ? 'style="background:#e3f2fd;"' : '';
+                const bg = isLeader ? 'style="background:#e3f2fd;"' : '';
                 return `<tr>
                     <td style="text-align:left;">${item.name}</td>
                     <td><input type="number" class="rank-input ${cls}" ${bg}
@@ -1031,8 +1173,8 @@
 
         // ── 데이터 제출 ──────────────────────────────────────────────
         window.submitData = async () => {
-            const sessId   = document.getElementById('userSessionSelect').value;
-            const team     = document.getElementById('teamSelect').value;
+            const sessId = document.getElementById('userSessionSelect').value;
+            const team = document.getElementById('teamSelect').value;
             const isLeader = (sessionStorage.getItem("sim_isLeader") === 'true');
             const selector = isLeader ? '.group-rank' : '.indiv-rank';
             let ranks = [], err = false;
@@ -1057,7 +1199,7 @@
 
         // ── [개편] 현황판 ────────────────────────────────────────────
         let dashUnsubMap = {}; // 팀별 onSnapshot 구독 관리
-        let detailUnsub  = null;
+        let detailUnsub = null;
 
         window.viewDashboard = () => {
             showScreen('dashScreen');
@@ -1072,8 +1214,8 @@
         }
 
         window.onDashSessionChange = async () => {
-            const sess     = document.getElementById('dashSessionSelect').value;
-            const cardsEl  = document.getElementById('dashTeamCards');
+            const sess = document.getElementById('dashSessionSelect').value;
+            const cardsEl = document.getElementById('dashTeamCards');
             const detailEl = document.getElementById('dashDetail');
 
             // 이전 구독 해제
@@ -1091,17 +1233,16 @@
             try { const cfg = await getDoc(doc(db, "course_configs", sess)); if (cfg.exists()) tCount = cfg.data().teamCount; } catch (e) { }
 
             // 초기 카드 그리드 렌더링 (로딩 상태)
-            cardsEl.innerHTML = `<div class="team-card-grid">${
-                Array.from({ length: tCount }, (_, i) => `
-                    <div class="team-card status-empty" id="card_team_${i+1}"
-                         onclick="onTeamCardClick('${sess}','team_${i+1}','${i+1}팀')">
+            cardsEl.innerHTML = `<div class="team-card-grid">${Array.from({ length: tCount }, (_, i) => `
+                    <div class="team-card status-empty" id="card_team_${i + 1}"
+                         onclick="onTeamCardClick('${sess}','team_${i + 1}','${i + 1}팀')">
                         <div class="card-icon">⏳</div>
-                        <div class="card-name">${i+1}팀</div>
+                        <div class="card-name">${i + 1}팀</div>
                         <div class="card-info">로딩 중...</div>
                         <div><span class="card-group-badge gbadge-none">집단 대기</span></div>
                     </div>`
-                ).join('')
-            }</div>`;
+            ).join('')
+                }</div>`;
 
             // 각 팀 실시간 구독
             for (let i = 1; i <= tCount; i++) {
@@ -1128,17 +1269,17 @@
             // ✏️ 진행 중: 개인 제출 있으나 집단 미입력
             // ⏳ 대기: 아무것도 없음
             let statusClass, icon;
-            if (groupDone)        { statusClass = 'status-done';     icon = '✅'; }
+            if (groupDone) { statusClass = 'status-done'; icon = '✅'; }
             else if (indivCount > 0) { statusClass = 'status-progress'; icon = '✏️'; }
-            else                  { statusClass = 'status-empty';    icon = '⏳'; }
+            else { statusClass = 'status-empty'; icon = '⏳'; }
 
             const gBadgeClass = groupDone ? 'gbadge-done' : (indivCount > 0 ? 'gbadge-waiting' : 'gbadge-none');
-            const gBadgeText  = groupDone ? '집단 완료'   : '집단 대기';
-            const indivText   = indivCount > 0 ? `개인 ${indivCount}명 제출` : '개인 미제출';
+            const gBadgeText = groupDone ? '집단 완료' : '집단 대기';
+            const indivText = indivCount > 0 ? `개인 ${indivCount}명 제출` : '개인 미제출';
 
             const wasSelected = card.classList.contains('selected');
-            card.className    = `team-card ${statusClass}${wasSelected ? ' selected' : ''}`;
-            card.innerHTML    = `
+            card.className = `team-card ${statusClass}${wasSelected ? ' selected' : ''}`;
+            card.innerHTML = `
                 <div class="card-icon">${icon}</div>
                 <div class="card-name">${teamNum}팀</div>
                 <div class="card-info">${indivText}</div>
@@ -1176,7 +1317,7 @@
                 div.innerHTML = "<p style='text-align:center; padding:20px;'>아직 입력된 데이터가 없습니다.</p>";
                 return;
             }
-            const headers  = individuals.map((_, i) => `<th class="col-narrow">P${i+1}</th>`).join('');
+            const headers = individuals.map((_, i) => `<th class="col-narrow">P${i + 1}</th>`).join('');
             const bodyRows = itemsData.map((item, idx) => {
                 const cells = individuals.map(ind => `<td>${ind ? ind[idx] : "-"}</td>`).join('');
                 return `<tr>
@@ -1199,18 +1340,25 @@
         // ── 전체 결과 ────────────────────────────────────────────────
         window.goToAllResultScreen = () => {
             showScreen('allResultScreen');
-            document.getElementById('resultViewSelect').value    = "";
+            document.getElementById('resultViewSelect').value = "";
             document.getElementById('allResultContent').innerHTML =
                 "<p style='text-align:center; padding:30px; color:#aaa;'>과정을 선택하면 결과가 표시됩니다.</p>";
         }
 
         window.loadResultTable = async () => {
             const sessId = document.getElementById('resultViewSelect').value;
-            const div    = document.getElementById('allResultContent');
-            if (!sessId) { div.innerHTML = "<p style='text-align:center; padding:30px; color:#aaa;'>과정을 선택해주세요.</p>"; return; }
+            const div = document.getElementById('allResultContent');
+            if (!sessId) { div.innerHTML = "..."; return; }
             div.innerHTML = "데이터 분석 중...";
-            let tCount = 7;
-            try { const cfg = await getDoc(doc(db, "course_configs", sessId)); if (cfg.exists()) tCount = cfg.data().teamCount; } catch (e) { }
+            let tCount = 7, localItems = scenarios.desert.items;  // ✅ localItems 추가
+            try {
+                const cfg = await getDoc(doc(db, "course_configs", sessId));
+                if (cfg.exists()) {
+                    tCount = cfg.data().teamCount || 7;
+                    const scenario = cfg.data().scenario || 'desert';       // ✅ 시나리오 읽기
+                    localItems = scenarios[scenario]?.items ?? scenarios.desert.items;  // ✅ 로컬로 고정
+                }
+            } catch (e) { }
             let all = [];
             for (let i = 1; i <= tCount; i++) {
                 try {
@@ -1219,7 +1367,7 @@
                     snap.forEach(d => {
                         const data = d.data(), r = data.ranks;
                         if (r) {
-                            const err = r.reduce((a, v, k) => a + Math.abs(v - itemsData[k].expert), 0);
+                            const err = r.reduce((a, v, k) => a + Math.abs(v - localItems[k].expert), 0);
                             if (d.id === 'group_scorer') g = err;
                             else if (data.type === 'individual' || !data.type) m.push(err);
                         }
@@ -1227,14 +1375,14 @@
                     let stat = { name: `${i}팀`, status: '대기', avg: 0, group: 0, gain: 0, best: 0, betterCnt: 0, count: 0, msg: "" };
                     if (m.length > 0 && g !== null) {
                         stat.status = '완료'; stat.group = g;
-                        stat.avg    = m.reduce((a, b) => a + b, 0) / m.length;
-                        stat.gain   = stat.avg - stat.group;
-                        stat.best   = Math.min(...m);
+                        stat.avg = m.reduce((a, b) => a + b, 0) / m.length;
+                        stat.gain = stat.avg - stat.group;
+                        stat.best = Math.min(...m);
                         stat.betterCnt = m.filter(s => s < g).length;
-                        stat.count  = m.length;
-                        if      (stat.gain > 0) stat.msg += `<div class="tag tag-good">시너지 발생</div><br>팀 토의가 효과적이었습니다.`;
+                        stat.count = m.length;
+                        if (stat.gain > 0) stat.msg += `<div class="tag tag-good">시너지 발생</div><br>팀 토의가 효과적이었습니다.`;
                         else if (stat.gain < 0) stat.msg += `<div class="tag tag-bad">역효과</div><br>집단 사고의 오류 가능성.`;
-                        else                    stat.msg += `<div class="tag tag-neutral">변화 없음</div>`;
+                        else stat.msg += `<div class="tag tag-neutral">변화 없음</div>`;
                         if (stat.best < stat.group) {
                             stat.msg += stat.gain > 0
                                 ? `<span class="warning-text">※ 개인 최우수자의 일부 의견만 수용됨</span>`
@@ -1247,7 +1395,7 @@
             const rows = all.map(t => {
                 if (t.status !== '완료') return `<tr style="color:#aaa;"><td>${t.name}</td><td colspan="7" style="text-align:left;">(입력 대기 중...)</td></tr>`;
                 const badge = t.gain > 0 ? 'bg-good' : (t.gain < 0 ? 'bg-bad' : 'bg-neutral');
-                const sign  = t.gain > 0 ? '+' : '';
+                const sign = t.gain > 0 ? '+' : '';
                 return `<tr>
                     <td><strong>${t.name}</strong></td><td>${t.count}명</td>
                     <td>${t.avg.toFixed(1)}</td>

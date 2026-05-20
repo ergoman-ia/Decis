@@ -752,6 +752,16 @@
 
         import { FIREBASE_CONFIG, ADMIN_PASSWORD } from "./secrets.js";
 
+
+        // 브라우저 alert 대체용 커스텀 모달 실행/종료 함수
+        window.customAlert = (message) => {
+            document.getElementById('customModalText').innerHTML = message;
+            document.getElementById('customModalOverlay').style.display = 'flex';
+        };
+        window.closeCustomModal = () => {
+            document.getElementById('customModalOverlay').style.display = 'none';
+        };
+
         // ── [개선] Firebase 초기화 + 오류 시 배너 표시 ──────────────
         let app, db;
         try {
@@ -1025,7 +1035,7 @@
                     const typeLabel = item.data.type === 'group'
                         ? '<span class="role-badge role-group">집단</span>'
                         : '<span class="role-badge role-indiv">개인</span>';
-                    const ranks = item.data.ranks ? item.data.ranks.join(", ") : "-";  
+                    const ranks = item.data.ranks ? item.data.ranks.join(", ") : "-";
                     return `<tr>
     <td style="white-space:nowrap; font-size:0.8rem;">${item.sess}</td>
     <td style="width:40px;">${item.teamName}</td>                   
@@ -1133,9 +1143,9 @@
             // [중복 방지 추가] 해당 과정에 제출 이력이 있는지 확인
             const localStatus = localStorage.getItem("sim_done_" + sessId);
             if (localStatus === "all") {
-                return alert("이미 이 과정의 모든 제출(개인 및 팀 합의)을 완료하셨습니다.");
+                return customAlert("이미 이 과정의 모든 제출(개인 및 팀 합의)을 완료하셨습니다.");
             } else if (localStatus === "indiv" && !isLeader) {
-                return alert("이미 개인 순위를 제출하셨습니다. 팀장인 경우 '팀장' 체크박스를 선택해 주세요.");
+                return customAlert("이미 개인 순위를 제출하셨습니다. 팀장인 경우 '팀장' 체크박스를 선택해 주세요.");
             }
 
             if (isLeader) {
@@ -1200,18 +1210,18 @@
                 const originalIdx = parseInt(el.dataset.idx);
                 ranks[originalIdx] = parseInt(el.value);
             });
-            if (err) return alert("1~15위 순위를 빠짐없이 중복 없이 입력해주세요.");
+            if (err) return customAlert("1~15위 순위를 빠짐없이 중복 없이 입력해주세요.");
             try {
                 if (isLeader) {
                     await setDoc(doc(db, "sessions", sessId, "teams", team, "submissions", "group_scorer"),
                         { ranks, type: 'group', timestamp: new Date() });
-                    
+
                     // [중복 방지 추가] 팀장 결과 제출 시 무조건 'all' 처리 (더 이상 제출 불가)
                     localStorage.setItem("sim_done_" + sessId, "all");
                 } else {
                     await addDoc(collection(db, "sessions", sessId, "teams", team, "submissions"),
                         { ranks, type: 'individual', timestamp: new Date() });
-                    
+
                     // [중복 방지 추가] 개인 결과 제출 완료 기록 (이후 팀장으로만 추가 입장 가능)
                     localStorage.setItem("sim_done_" + sessId, "indiv");
                 }
@@ -1442,6 +1452,18 @@
         window.viewAllResultsAdmin = window.goToAllResultScreen;
 
     </script>
+    <div id="customModalOverlay" class="custom-modal-overlay"
+        style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:99999; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+        <div class="custom-modal-box"
+            style="background:#fff; width:100%; max-width:340px; border-radius:14px; padding:25px 20px; text-align:center; box-shadow:0 8px 30px rgba(0,0,0,0.3); box-sizing:border-box;">
+            <div class="custom-modal-icon" style="font-size:2.5rem; margin-bottom:12px; color:#f39c12;">⚠️</div>
+            <div id="customModalText" class="custom-modal-text"
+                style="font-size:1rem; color:#333; line-height:1.5; margin-bottom:22px; word-break:keep-all;">안내 문구
+            </div>
+            <button class="custom-modal-btn" onclick="closeCustomModal()"
+                style="width:100%; padding:12px; background:#2c3e50; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:bold; cursor:pointer;">확인</button>
+        </div>
+    </div>
 </body>
 
 </html>

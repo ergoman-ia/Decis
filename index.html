@@ -647,6 +647,12 @@
                 </div>
 
                 <button class="btn btn-blue" onclick="enterSim()" style="margin-top:20px;">시뮬레이션 시작</button>
+                <div style="text-align: center; margin-top: 15px;">
+                    <span onclick="resetMyStorage()"
+                        style="color: #aaa; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
+                        ⚠️ 기기 입력 오류 시 (제출 이력 강제 초기화)
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -1196,6 +1202,18 @@
             all.forEach(el => { if (el.value) { map[el.value] = map[el.value] || []; map[el.value].push(el); } });
             Object.values(map).forEach(g => { if (g.length > 1) g.forEach(el => el.classList.add('error-input')); });
         }
+
+        window.resetMyStorage = () => {
+            if (confirm("정말 이 기기의 모든 시뮬레이션 제출 기록을 초기화하시겠습니까?\n(처음부터 다시 입력할 수 있게 됩니다.)")) {
+                // 이 스마트폰 브라우저에 저장된 중복 방지 키값들을 싹 지웁니다.
+                for (let key in localStorage) {
+                    if (key.startsWith("sim_done_")) {
+                        localStorage.removeItem(key);
+                    }
+                }
+                customAlert("기기 초기화가 완료되었습니다.<br>이제 새로 입력하실 수 있습니다.");
+            }
+        };
 
         // ── 데이터 제출 ──────────────────────────────────────────────
         window.submitData = async () => {

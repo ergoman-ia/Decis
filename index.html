@@ -647,11 +647,11 @@
                 </div>
 
                 <button class="btn btn-blue" onclick="enterSim()" style="margin-top:20px;">시뮬레이션 시작</button>
-                <div style="text-align: center; margin-top: 15px;">
-                    <span onclick="resetMyStorage()"
-                        style="color: #aaa; font-size: 0.8rem; cursor: pointer; text-decoration: underline;">
+                <div style="text-align: center; margin-top: 20px;">
+                    <button type="button" onclick="window.resetMyStorage()"
+                        style="width: auto; display: inline-block; padding: 8px 14px; background-color: #e9ecef; color: #6c757d; border: 1px dashed #ced4da; border-radius: 6px; font-size: 0.85rem; font-weight: normal; cursor: pointer;">
                         ⚠️ 기기 입력 오류 시 (제출 이력 강제 초기화)
-                    </span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -1203,15 +1203,29 @@
             Object.values(map).forEach(g => { if (g.length > 1) g.forEach(el => el.classList.add('error-input')); });
         }
 
-        window.resetMyStorage = () => {
-            if (confirm("정말 이 기기의 모든 시뮬레이션 제출 기록을 초기화하시겠습니까?\n(처음부터 다시 입력할 수 있게 됩니다.)")) {
-                // 이 스마트폰 브라우저에 저장된 중복 방지 키값들을 싹 지웁니다.
-                for (let key in localStorage) {
-                    if (key.startsWith("sim_done_")) {
-                        localStorage.removeItem(key);
+        window.resetMyStorage = function () {
+            if (confirm("정말 이 기기의 모든 시뮬레이션 제출 기록을 초기화하시겠습니까?\n(확인을 누르면 처음부터 다시 입력할 수 있습니다.)")) {
+                try {
+                    // 로컬 스토리지에 저장된 중복 방지 키값 순회 삭제
+                    let keysToRemove = [];
+                    for (let i = 0; i < localStorage.length; i++) {
+                        let key = localStorage.key(i);
+                        if (key && key.startsWith("sim_done_")) {
+                            keysToRemove.push(key);
+                        }
                     }
+
+                    // 모아서 한 번에 삭제
+                    keysToRemove.forEach(k => localStorage.removeItem(k));
+
+                    // 모달 알림창 띄운 후 화면 새로고침
+                    window.customAlert("기기 초기화가 완료되었습니다.<br>화면이 자동으로 새로고침됩니다.");
+                    setTimeout(() => { location.reload(); }, 1500);
+
+                } catch (e) {
+                    console.error("스토리지 초기화 실패:", e);
+                    alert("초기화 중 오류가 발생했습니다. 브라우저 쿠키를 직접 지워주세요.");
                 }
-                customAlert("기기 초기화가 완료되었습니다.<br>이제 새로 입력하실 수 있습니다.");
             }
         };
 

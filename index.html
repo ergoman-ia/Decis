@@ -647,6 +647,13 @@
                 </div>
 
                 <button class="btn btn-blue" onclick="enterSim()" style="margin-top:20px;">시뮬레이션 시작</button>
+
+                <div style="text-align: center; margin-top: 30px; margin-bottom: 20px;">
+        <button type="button" id="emergencyResetBtn" onclick="resetMyStorage()"
+            style="width: auto; padding: 10px 18px; background-color: #fff; color: #d9534f; border: 1px solid #d9534f; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            ⚠️ 제출 이력 강제 초기화 (오류 시 사용)
+        </button>
+    </div>
             </div>
         </div>
 
@@ -1493,13 +1500,7 @@
             <button class="custom-modal-btn" onclick="closeCustomModal()"
                 style="width:100%; padding:12px; background:#2c3e50; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:bold; cursor:pointer;">확인</button>
         </div>
-    </div>
-    <div style="text-align: center; margin-top: 30px; margin-bottom: 20px;">
-        <button type="button" id="emergencyResetBtn" onclick="resetMyStorage()"
-            style="width: auto; padding: 10px 18px; background-color: #fff; color: #d9534f; border: 1px solid #d9534f; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-            ⚠️ 제출 이력 강제 초기화 (오류 시 사용)
-        </button>
-    </div>
+    </div>    
 </body>
 
 </html>

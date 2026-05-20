@@ -647,12 +647,6 @@
                 </div>
 
                 <button class="btn btn-blue" onclick="enterSim()" style="margin-top:20px;">시뮬레이션 시작</button>
-                <div style="text-align: center; margin-top: 20px;">
-                    <button type="button" onclick="window.resetMyStorage()"
-                        style="width: auto; display: inline-block; padding: 8px 14px; background-color: #e9ecef; color: #6c757d; border: 1px dashed #ced4da; border-radius: 6px; font-size: 0.85rem; font-weight: normal; cursor: pointer;">
-                        ⚠️ 기기 입력 오류 시 (제출 이력 강제 초기화)
-                    </button>
-                </div>
             </div>
         </div>
 
@@ -1203,31 +1197,34 @@
             Object.values(map).forEach(g => { if (g.length > 1) g.forEach(el => el.classList.add('error-input')); });
         }
 
-        window.resetMyStorage = function () {
-            if (confirm("정말 이 기기의 모든 시뮬레이션 제출 기록을 초기화하시겠습니까?\n(확인을 누르면 처음부터 다시 입력할 수 있습니다.)")) {
-                try {
-                    // 로컬 스토리지에 저장된 중복 방지 키값 순회 삭제
-                    let keysToRemove = [];
-                    for (let i = 0; i < localStorage.length; i++) {
-                        let key = localStorage.key(i);
-                        if (key && key.startsWith("sim_done_")) {
-                            keysToRemove.push(key);
+        // [수정] 독립형 초기화 이벤트 리스너
+        document.addEventListener('DOMContentLoaded', () => {
+            const resetBtn = document.getElementById('emergencyResetBtn');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', () => {
+                    if (confirm("정말 이 기기의 제출 기록을 모두 지우시겠습니까?\n새로 입력할 수 있게 됩니다.")) {
+                        try {
+                            // localStorage 중 sim_done_ 키만 찾아 삭제
+                            Object.keys(localStorage).forEach(key => {
+                                if (key.startsWith("sim_done_")) {
+                                    localStorage.removeItem(key);
+                                }
+                            });
+
+                            // 시각적 피드백
+                            resetBtn.innerText = "✅ 초기화 완료! 새로고침 중...";
+                            resetBtn.style.backgroundColor = "#dff0d8";
+                            resetBtn.style.color = "#3c763d";
+                            resetBtn.style.borderColor = "#d6e9c6";
+
+                            setTimeout(() => location.reload(), 1000);
+                        } catch (e) {
+                            alert("초기화 실패: 브라우저 설정을 확인해주세요.");
                         }
                     }
-
-                    // 모아서 한 번에 삭제
-                    keysToRemove.forEach(k => localStorage.removeItem(k));
-
-                    // 모달 알림창 띄운 후 화면 새로고침
-                    window.customAlert("기기 초기화가 완료되었습니다.<br>화면이 자동으로 새로고침됩니다.");
-                    setTimeout(() => { location.reload(); }, 1500);
-
-                } catch (e) {
-                    console.error("스토리지 초기화 실패:", e);
-                    alert("초기화 중 오류가 발생했습니다. 브라우저 쿠키를 직접 지워주세요.");
-                }
+                });
             }
-        };
+        });
 
         // ── 데이터 제출 ──────────────────────────────────────────────
         window.submitData = async () => {
@@ -1495,6 +1492,12 @@
             <button class="custom-modal-btn" onclick="closeCustomModal()"
                 style="width:100%; padding:12px; background:#2c3e50; color:#fff; border:none; border-radius:8px; font-size:1rem; font-weight:bold; cursor:pointer;">확인</button>
         </div>
+    </div>
+    <div style="text-align: center; margin-top: 30px; margin-bottom: 20px;">
+        <button type="button" id="emergencyResetBtn"
+            style="width: auto; padding: 10px 18px; background-color: #fff; color: #d9534f; border: 1px solid #d9534f; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            ⚠️ 제출 이력 강제 초기화 (오류 시 사용)
+        </button>
     </div>
 </body>
 

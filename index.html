@@ -1196,36 +1196,7 @@
             all.forEach(el => { if (el.value) { map[el.value] = map[el.value] || []; map[el.value].push(el); } });
             Object.values(map).forEach(g => { if (g.length > 1) g.forEach(el => el.classList.add('error-input')); });
         }
-
-        // [수정] 독립형 초기화 이벤트 리스너
-        document.addEventListener('DOMContentLoaded', () => {
-            const resetBtn = document.getElementById('emergencyResetBtn');
-            if (resetBtn) {
-                resetBtn.addEventListener('click', () => {
-                    if (confirm("정말 이 기기의 제출 기록을 모두 지우시겠습니까?\n새로 입력할 수 있게 됩니다.")) {
-                        try {
-                            // localStorage 중 sim_done_ 키만 찾아 삭제
-                            Object.keys(localStorage).forEach(key => {
-                                if (key.startsWith("sim_done_")) {
-                                    localStorage.removeItem(key);
-                                }
-                            });
-
-                            // 시각적 피드백
-                            resetBtn.innerText = "✅ 초기화 완료! 새로고침 중...";
-                            resetBtn.style.backgroundColor = "#dff0d8";
-                            resetBtn.style.color = "#3c763d";
-                            resetBtn.style.borderColor = "#d6e9c6";
-
-                            setTimeout(() => location.reload(), 1000);
-                        } catch (e) {
-                            alert("초기화 실패: 브라우저 설정을 확인해주세요.");
-                        }
-                    }
-                });
-            }
-        });
-
+        
         // ── 데이터 제출 ──────────────────────────────────────────────
         window.submitData = async () => {
             const sessId = document.getElementById('userSessionSelect').value;
@@ -1477,6 +1448,33 @@
                     <tbody>${rows}</tbody>
                 </table>`;
         }
+
+        // [수정] 모달 기반의 커스텀 확인 창 (브라우저 confirm 대체)
+window.resetMyStorage = function () {
+    // 1. 기존 모달을 활용하여 '예/아니오' 질문을 띄움
+    document.getElementById('customModalText').innerHTML = "정말 이 기기의 모든 제출 기록을 초기화하시겠습니까?<br><br><button onclick='executeReset()' style='padding:10px 20px; background:#e74c3c; color:#fff; border:none; border-radius:5px; margin-right:10px;'>예</button><button onclick='closeCustomModal()' style='padding:10px 20px; background:#95a5a6; color:#fff; border:none; border-radius:5px;'>아니오</button>";
+    document.getElementById('customModalOverlay').style.display = 'flex';
+};
+
+// 2. '예'를 눌렀을 때 실행될 실제 로직
+window.executeReset = function () {
+    try {
+        let keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if (key && key.startsWith("sim_done_")) {
+                keysToRemove.push(key);
+            }
+        }
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+        
+        // 초기화 후 메시지 출력 및 새로고침
+        document.getElementById('customModalText').innerHTML = "✅ 초기화가 완료되었습니다.<br>잠시 후 새로고침됩니다.";
+        setTimeout(() => { location.reload(); }, 1500);
+    } catch (e) {
+        alert("초기화 실패");
+    }
+};
 
         window.viewAllResultsAdmin = window.goToAllResultScreen;
 

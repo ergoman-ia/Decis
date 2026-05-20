@@ -1196,7 +1196,7 @@
             all.forEach(el => { if (el.value) { map[el.value] = map[el.value] || []; map[el.value].push(el); } });
             Object.values(map).forEach(g => { if (g.length > 1) g.forEach(el => el.classList.add('error-input')); });
         }
-        
+
         // ── 데이터 제출 ──────────────────────────────────────────────
         window.submitData = async () => {
             const sessId = document.getElementById('userSessionSelect').value;
@@ -1450,31 +1450,34 @@
         }
 
         // [수정] 모달 기반의 커스텀 확인 창 (브라우저 confirm 대체)
-window.resetMyStorage = function () {
-    // 1. 기존 모달을 활용하여 '예/아니오' 질문을 띄움
-    document.getElementById('customModalText').innerHTML = "정말 이 기기의 모든 제출 기록을 초기화하시겠습니까?<br><br><button onclick='executeReset()' style='padding:10px 20px; background:#e74c3c; color:#fff; border:none; border-radius:5px; margin-right:10px;'>예</button><button onclick='closeCustomModal()' style='padding:10px 20px; background:#95a5a6; color:#fff; border:none; border-radius:5px;'>아니오</button>";
-    document.getElementById('customModalOverlay').style.display = 'flex';
-};
+        window.resetMyStorage = function () {
+            // 1. 기존 모달을 활용하여 '예/아니오' 질문을 띄움
+            document.getElementById('customModalText').innerHTML = "정말 이 기기의 모든 제출 기록을 초기화하시겠습니까?<br><br><button onclick='executeReset()' style='padding:10px 20px; background:#e74c3c; color:#fff; border:none; border-radius:5px; margin-right:10px;'>예</button><button onclick='closeCustomModal()' style='padding:10px 20px; background:#95a5a6; color:#fff; border:none; border-radius:5px;'>아니오</button>";
+            document.getElementById('customModalOverlay').style.display = 'flex';
+        };
 
-// 2. '예'를 눌렀을 때 실행될 실제 로직
-window.executeReset = function () {
-    try {
-        let keysToRemove = [];
-        for (let i = 0; i < localStorage.length; i++) {
-            let key = localStorage.key(i);
-            if (key && key.startsWith("sim_done_")) {
-                keysToRemove.push(key);
+        // 2. '예'를 눌렀을 때 실행될 실제 로직
+        window.executeReset = function () {
+            try {
+                let keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    let key = localStorage.key(i);
+                    if (key && key.startsWith("sim_done_")) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(k => localStorage.removeItem(k));
+
+                // 초기화 후 메시지 출력 및 새로고침
+                document.getElementById('customModalText').innerHTML = "✅ 초기화가 완료되었습니다.<br>잠시 후 새로고침됩니다.";
+                setTimeout(() => { location.reload(); }, 1500);
+            } catch (e) {
+                // 커스텀 모달 텍스트 업데이트 방식으로 변경
+                document.getElementById('customModalText').innerHTML = "❌ 초기화에 실패했습니다.<br>관리자에게 문의해주세요.";
+                // 확인 버튼을 다시 보여주기 위해 커스텀 모달 구조를 그대로 활용
+                document.getElementById('customModalText').innerHTML += "<br><br><button onclick='closeCustomModal()' style='padding:10px 20px; background:#2c3e50; color:#fff; border:none; border-radius:5px;'>닫기</button>";
             }
-        }
-        keysToRemove.forEach(k => localStorage.removeItem(k));
-        
-        // 초기화 후 메시지 출력 및 새로고침
-        document.getElementById('customModalText').innerHTML = "✅ 초기화가 완료되었습니다.<br>잠시 후 새로고침됩니다.";
-        setTimeout(() => { location.reload(); }, 1500);
-    } catch (e) {
-        alert("초기화 실패");
-    }
-};
+        };
 
         window.viewAllResultsAdmin = window.goToAllResultScreen;
 
@@ -1492,7 +1495,7 @@ window.executeReset = function () {
         </div>
     </div>
     <div style="text-align: center; margin-top: 30px; margin-bottom: 20px;">
-        <button type="button" id="emergencyResetBtn"
+        <button type="button" id="emergencyResetBtn" onclick="resetMyStorage()"
             style="width: auto; padding: 10px 18px; background-color: #fff; color: #d9534f; border: 1px solid #d9534f; border-radius: 8px; font-size: 0.9rem; font-weight: bold; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
             ⚠️ 제출 이력 강제 초기화 (오류 시 사용)
         </button>

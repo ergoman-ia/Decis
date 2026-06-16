@@ -1421,6 +1421,39 @@
                 "<p style='text-align:center; padding:30px; color:#aaa;'>과정을 선택하면 결과가 표시됩니다.</p>";
         }
 
+        // ── [추가] 2-1 결과 패턴별 개념 카드 ─────────────────────────
+        // 팀의 결과 패턴(시너지/역효과 × 최고 개인 능가 여부)을 집단 의사결정 개념과 연결한다.
+        function buildInterpretation(stat) {
+            const synergy = stat.gain;                  // >0: 집단이 평균보다 우수(시너지), <0: 역효과
+            const bestGap = stat.group - stat.best;     // >0: 집단이 최고 개인보다 부정확
+
+            let tagClass, concept, theory, caution = "";
+
+            if (synergy > 0 && bestGap <= 0) {
+                tagClass = 'tag-good';
+                concept = '집단지성';
+                theory = '구성원의 정보가 충분히 공유·통합되어, 팀이 최고 개인 수준 이상의 결정을 내렸습니다. 가장 이상적인 협업 형태입니다.';
+            } else if (synergy > 0 && bestGap > 0) {
+                tagClass = 'tag-good';
+                concept = '부분 시너지 · 자원 미활용';
+                theory = '토의로 평균보다는 나아졌지만, 더 정확했던 구성원의 판단을 끝까지 반영하지 못했습니다. 소수의 옳은 의견을 끌어내는 것이 과제입니다.';
+                caution = `※ 최고 개인이 집단보다 ${bestGap}점 더 정확했습니다.`;
+            } else if (synergy < 0) {
+                tagClass = 'tag-bad';
+                concept = '집단사고 · 동조 압력';
+                theory = '토의 후 오히려 정확도가 떨어졌습니다. 동조 압력·권위 편향·성급한 합의로 옳은 의견이 묻혔을 수 있습니다.';
+                if (stat.betterCnt > 0) caution = `※ 집단보다 정확했던 구성원이 ${stat.betterCnt}명 있었으나 반영되지 않았습니다.`;
+            } else {
+                tagClass = 'tag-neutral';
+                concept = '변화 없음';
+                theory = '집단 결정이 개인 평균과 같습니다. 실질적 토의 없이 단순 평균·타협에 그쳤을 가능성이 있습니다.';
+            }
+
+            let html = `<div class="tag ${tagClass}">${concept}</div><div style="margin-top:4px;">${theory}</div>`;
+            if (caution) html += `<span class="warning-text">${caution}</span>`;
+            return html;
+        }
+
         window.loadResultTable = async () => {
             const sessId = document.getElementById('resultViewSelect').value;
             const div = document.getElementById('allResultContent');
@@ -1456,37 +1489,45 @@
                         stat.best = Math.min(...m);
                         stat.betterCnt = m.filter(s => s < g).length;
                         stat.count = m.length;
-                        if (stat.gain > 0) stat.msg += `<div class="tag tag-good">시너지 발생</div><br>팀 토의가 효과적이었습니다.`;
-                        else if (stat.gain < 0) stat.msg += `<div class="tag tag-bad">역효과</div><br>집단 사고의 오류 가능성.`;
-                        else stat.msg += `<div class="tag tag-neutral">변화 없음</div>`;
-                        if (stat.best < stat.group) {
-                            stat.msg += stat.gain > 0
-                                ? `<span class="warning-text">※ 개인 최우수자의 일부 의견만 수용됨</span>`
-                                : `<span class="warning-text">※ 개인 최우수자(${stat.best}점) 의견 묵살됨</span>`;
-                        }
+                        stat.msg = buildInterpretation(stat); // [2-1] 결과 패턴별 개념 카드
                     }
                     all.push(stat);
                 } catch (e) { }
             }
             const rows = all.map(t => {
-                if (t.status !== '완료') return `<tr style="color:#aaa;"><td>${t.name}</td><td colspan="7" style="text-align:left;">(입력 대기 중...)</td></tr>`;
+                if (t.status !== '완료') return `<tr style="color:#aaa;"><td>${t.name}</td><td colspan="8" style="text-align:left;">(입력 대기 중...)</td></tr>`;
                 const badge = t.gain > 0 ? 'bg-good' : (t.gain < 0 ? 'bg-bad' : 'bg-neutral');
                 const sign = t.gain > 0 ? '+' : '';
+                // [2-2] 집단 vs 최고 개인 비교 (점수는 오차이므로 낮을수록 우수)
+                const bestGap = t.group - t.best;
+                let cmpBadge, cmpText;
+                if (bestGap < 0) { cmpBadge = 'bg-good'; cmpText = `집단 ${Math.abs(bestGap)}점 우위`; }
+                else if (bestGap === 0) { cmpBadge = 'bg-neutral'; cmpText = '동률'; }
+                else { cmpBadge = 'bg-bad'; cmpText = `최고개인 ${bestGap}점 우위`; }
                 return `<tr>
                     <td><strong>${t.name}</strong></td><td>${t.count}명</td>
                     <td>${t.avg.toFixed(1)}</td>
                     <td style="color:var(--accent); font-weight:700;">${t.group}</td>
                     <td><span class="badge ${badge}">${sign}${t.gain.toFixed(1)}</span></td>
-                    <td>${t.best}</td><td>${t.betterCnt}명</td>
+                    <td>${t.best}</td>
+                    <td><span class="badge ${cmpBadge}">${cmpText}</span></td>
+                    <td>${t.betterCnt}명</td>
                     <td class="interpret-box">${t.msg}</td>
                 </tr>`;
             }).join('');
             div.innerHTML = `
+                <div style="background:#f8f9fa; border:1px solid #e9ecef; border-radius:8px; padding:12px 14px; margin-bottom:14px; font-size:0.82rem; color:#555; line-height:1.7; word-break:keep-all;">
+                    <strong>📖 지표 안내</strong> (점수는 정답과의 오차이므로 <strong>낮을수록 우수</strong>)<br>
+                    · <strong>이득</strong> = 개인 평균 − 집단 (＋면 토의로 향상 = 시너지)<br>
+                    · <strong>집단 vs 최고개인</strong> = 팀의 최고 개인을 집단이 따라잡았는지 (‘최고개인 우위’ = 팀 내 최고 전문성을 못 살림)<br>
+                    · <strong>초월자</strong> = 집단보다 정확했던 개인 수 · <strong>종합 해석</strong> = 결과 패턴에 대응하는 집단 의사결정 개념
+                </div>
                 <table>
                     <thead><tr>
                         <th class="col-narrow">팀</th><th class="col-narrow">인원</th>
                         <th class="col-med">개인(평균)</th><th class="col-med">집단</th>
                         <th class="col-med">이득</th><th class="col-med">최우수</th>
+                        <th class="col-med">집단 vs 최고개인</th>
                         <th class="col-med">초월자</th><th class="col-wide">종합 해석</th>
                     </tr></thead>
                     <tbody>${rows}</tbody>

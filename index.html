@@ -224,6 +224,26 @@
             word-break: keep-all;
         }
 
+        /* [추가] 활성화 시 표시되는 초록색 체크 박스 */
+        .ready-mark {
+            display: none;
+            width: 18px;
+            height: 18px;
+            margin-right: 7px;
+            border-radius: 4px;
+            background: var(--success, #27ae60);
+            color: #fff;
+            font-size: 0.8rem;
+            font-weight: 900;
+            line-height: 18px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .checkbox-wrapper.unlocked .ready-mark {
+            display: inline-block;
+        }
+
         .phase-bar {
             display: flex;
             align-items: center;
@@ -716,8 +736,7 @@
                     <div class="checkbox-wrapper locked" id="leaderCheckWrap">
                         <input type="checkbox" id="isLeaderCheck" disabled>
                         <label for="isLeaderCheck">
-                            팀 토론 후 순위 입력
-                            <span class="phase-hint" id="leaderCheckHint" style="color:#888;">🔒 과정을 선택하면 현재 단계를 확인합니다.</span>
+                            <span class="ready-mark" id="leaderReadyMark">✓</span><span id="leaderCheckText">팀 토론 후 순위 입력</span>
                         </label>
                     </div>
                 </div>
@@ -1203,20 +1222,18 @@
         function applyPhaseLock(phase) {
             const wrap = document.getElementById('leaderCheckWrap');
             const chk = document.getElementById('isLeaderCheck');
-            const hint = document.getElementById('leaderCheckHint');
-            if (!wrap || !chk || !hint) return;
+            const txt = document.getElementById('leaderCheckText');
+            if (!wrap || !chk || !txt) return;
 
             if (phase === 'group') {
                 wrap.classList.remove('locked'); wrap.classList.add('unlocked');
                 chk.disabled = false;
-                hint.innerHTML = "✅ <strong>팀 토론 단계입니다.</strong> 팀에서 정한 대표 <u>1명만</u> 체크하고 합의 순위를 입력하세요.";
-                hint.style.color = "#1e7e34";
+                txt.innerText = "팀 토론 후 순위 입력 가능";
             } else {
                 wrap.classList.add('locked'); wrap.classList.remove('unlocked');
                 chk.checked = false;   // ★ 개인 단계로 되돌아가면 강제 해제
                 chk.disabled = true;
-                hint.innerHTML = "🔒 아직 <strong>개인 입력 단계</strong>입니다. 관리자가 '팀 토론 시작'을 누르면 이 항목이 활성화됩니다. <br>(→ 팀 입력이 아직 남아 있다는 뜻입니다)";
-                hint.style.color = "#8a6d3b";
+                txt.innerText = "팀 토론 후 순위 입력";
             }
         }
 
@@ -1229,11 +1246,7 @@
             // 이전 과정 구독 해제 후 잠금 초기화
             if (userPhaseUnsub) { userPhaseUnsub(); userPhaseUnsub = null; }
             applyPhaseLock('individual');
-            if (!sess) {
-                document.getElementById('leaderCheckHint').innerHTML = "🔒 과정을 선택하면 현재 단계를 확인합니다.";
-                document.getElementById('leaderCheckHint').style.color = "#888";
-                return;
-            }
+            if (!sess) return;
 
             // 현재 과정의 진행 단계를 실시간 구독 (관리자가 버튼을 누르면 즉시 반영, 새로고침 불필요)
             userPhaseUnsub = onSnapshot(doc(db, "course_configs", sess), (snap) => {

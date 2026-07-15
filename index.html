@@ -258,6 +258,25 @@
             color: #555;
         }
 
+        .table-legend {
+            margin-top: 12px;
+            padding: 12px 14px;
+            background: #f8f9fa;
+            border-left: 3px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #555;
+            word-break: keep-all;
+        }
+
+        .table-legend .legend-mark {
+            display: inline-block;
+            min-width: 22px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
         .tag {
             display: inline-block;
             padding: 2px 8px;
@@ -1479,7 +1498,12 @@
                         <th class="col-med">초월자</th><th class="col-wide">종합 해석</th>
                     </tr></thead>
                     <tbody>${rows}</tbody>
-                </table>`;
+                </table>
+                <div class="table-legend">
+                    <div><span class="legend-mark">*</span>점수는 낮을수록 생존할 가능성이 높음.</div>
+                    <div><span class="legend-mark">**</span>최우수 : 집단 내에서 가장 우수한 자의 점수</div>
+                    <div><span class="legend-mark">***</span>초월자 : 개인 점수가 집단 점수보다 낮은 인원 수</div>
+                </div>`;
         }
 
         // [수정] 모달 기반의 커스텀 확인 창 (브라우저 confirm 대체)

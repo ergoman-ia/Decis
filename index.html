@@ -1313,16 +1313,25 @@
                 return customAlert("이미 개인 순위를 제출하셨습니다. 팀장인 경우 '팀장' 체크박스를 선택해 주세요.");
             }
 
+            // [수정] 단계 확인을 팀장 전용에서 공통으로 이동
+            //        기존에는 isLeader일 때만 검사해서, 팀 토론 중에도 체크 없이
+            //        '시뮬레이션 시작'을 누르면 개인 입력이 가능한 구멍이 있었음.
+            let phaseNow = 'individual';
+            try {
+                const cfgNow = await getDoc(doc(db, "course_configs", sessId));
+                phaseNow = cfgNow.exists() ? (cfgNow.data().phase || 'individual') : 'individual';
+            } catch (e) { console.error("단계 확인 오류:", e); }
+
+            if (!isLeader && phaseNow === 'group') {
+                applyPhaseLock(phaseNow);
+                return customAlert("<strong>팀 토론 단계</strong>가 시작되어 개인 순위 입력이 마감되었습니다.<br>팀 합의 결과는 팀 대표(팀장)가 '팀 토론 후 순위 입력'을 체크하고 제출합니다.");
+            }
+
             if (isLeader) {
-                // [추가] 화면이 오래 열려 있었거나 구독이 끊긴 경우를 대비한 2차 검증
-                try {
-                    const cfgNow = await getDoc(doc(db, "course_configs", sessId));
-                    const phaseNow = cfgNow.exists() ? (cfgNow.data().phase || 'individual') : 'individual';
-                    if (phaseNow !== 'group') {
-                        applyPhaseLock(phaseNow);
-                        return customAlert("아직 <strong>개인 입력 단계</strong>입니다.<br>'팀 토론 후 순위 입력'은 관리자가 토론 시작을 선언한 뒤에 사용할 수 있습니다.");
-                    }
-                } catch (e) { console.error("단계 확인 오류:", e); }
+                if (phaseNow !== 'group') {
+                    applyPhaseLock(phaseNow);
+                    return customAlert("아직 <strong>개인 입력 단계</strong>입니다.<br>'팀 토론 후 순위 입력'은 관리자가 토론 시작을 선언한 뒤에 사용할 수 있습니다.");
+                }
 
                 // [추가] 개인 제출 이력이 없는 기기에서의 팀 입력은 경고 (오체크 방지 보조)
                 if (localStatus !== "indiv" && !confirm("이 기기에서는 개인 순위 제출 기록이 확인되지 않습니다.\n\n정말 '팀 토론 결과'를 입력하는 대표자가 맞습니까?")) return;
@@ -1396,6 +1405,19 @@
             });
             
             if (err) return customAlert("1~15위 순위를 빠짐없이 중복 없이 입력해주세요.");
+
+            // [추가] 제출 시점 2차 단계 검증
+            //        개인 단계에 입력 화면을 열어둔 채 토론이 시작된 경우,
+            //        토론 내용이 반영된 '개인' 순위가 뒤늦게 섞이는 것을 방지.
+            if (!isLeader) {
+                try {
+                    const cfgNow = await getDoc(doc(db, "course_configs", sessId));
+                    const phaseNow = cfgNow.exists() ? (cfgNow.data().phase || 'individual') : 'individual';
+                    if (phaseNow === 'group') {
+                        return customAlert("팀 토론 단계가 시작되어 <strong>개인 순위 제출이 마감</strong>되었습니다.<br>불가피한 사정이 있으면 관리자에게 요청해 단계를 잠시 '개인 입력'으로 되돌린 뒤 제출해 주세요.");
+                    }
+                } catch (e) { console.error("단계 확인 오류:", e); }
+            }
             
             // [추가] 에러 검증을 통과했다면 전송 상태로 변경하고 버튼을 시각적으로 비활성화합니다.
             isSubmitting = true;

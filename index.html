@@ -979,6 +979,28 @@
         // 현재 활성 시나리오 품목 (기본값: 사막, 과정 선택 시 자동 교체됨)
         let itemsData = scenarios.desert.items;
 
+        // ── 품목 순서 무작위화 ───────────────────────────────────────
+        // [수정] 기존 sort(() => Math.random() - 0.5) 는 균등 셔플이 아니어서
+        //        원본(=전문가 정답) 순서가 약 1/14,000 확률로 그대로 노출되었음.
+        //        Fisher–Yates 로 교체하여 15! 가지를 균등하게 뽑고,
+        //        만에 하나 원본 순서가 나오면 다시 뽑아 0점 노출 확률을 0 으로 만듦.
+        function makeShuffledIndices(n) {
+            const idx = Array.from({ length: n }, (_, i) => i);
+            if (n < 2) return idx;
+
+            for (let attempt = 0; attempt < 100; attempt++) {
+                // Fisher–Yates: 뒤에서부터 0..i 중 하나와 교환
+                for (let i = n - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [idx[i], idx[j]] = [idx[j], idx[i]];
+                }
+                // 원본 순서(= 정답순 1,2,...,n)면 폐기하고 재시도
+                if (idx.some((v, i) => v !== i)) return idx;
+            }
+            // 이론상 도달 불가(확률 (1/15!)^100). 최후 방어로 강제 회전.
+            return idx.map((_, i) => (i + 1) % n);
+        }
+
         // ── 공통 유틸 ────────────────────────────────────────────────
         function formatDate(date) {
             const pad = n => String(n).padStart(2, '0');
@@ -1324,8 +1346,7 @@
 
             // [개선] inputmode="numeric" pattern="[0-9]*" → 모바일 정수 전용 키패드
             // 인덱스 배열을 만들고 무작위로 섞어줍니다.
-            const shuffledIndices = Array.from({ length: itemsData.length }, (_, i) => i)
-                .sort(() => Math.random() - 0.5);
+            const shuffledIndices = makeShuffledIndices(itemsData.length);
 
             document.getElementById('inputBody').innerHTML = shuffledIndices.map(idx => {
                 const item = itemsData[idx]; // 섞인 인덱스를 바탕으로 원본 아이템을 가져옵니다.
